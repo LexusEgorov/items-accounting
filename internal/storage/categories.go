@@ -13,13 +13,7 @@ type Categories struct {
 }
 
 // TODO: add logic for all methods
-func NewCategories(connStr string) (*Categories, error) {
-	db, err := NewDB(connStr)
-
-	if err != nil {
-		return nil, err
-	}
-
+func NewCategories(db *DB) (*Categories, error) {
 	return &Categories{
 		db:   db,
 		psql: squirrel.StatementBuilder.PlaceholderFormat(squirrel.Dollar),

@@ -11,13 +11,7 @@ type Products struct {
 }
 
 // TODO: add logic for methods
-func NewProducts(connStr string) (*Products, error) {
-	db, err := NewDB(connStr)
-
-	if err != nil {
-		return nil, err
-	}
-
+func NewProducts(db *DB) (*Products, error) {
 	return &Products{
 		db:   db,
 		psql: squirrel.StatementBuilder.PlaceholderFormat(squirrel.Dollar),

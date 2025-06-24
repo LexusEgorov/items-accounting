@@ -10,14 +10,8 @@ type DB struct {
 	DB *pgx.Conn
 }
 
-var db *DB
-
 func NewDB(connStr string) (*DB, error) {
-	if db != nil {
-		return db, nil
-	}
-
-	db = &DB{}
+	db := &DB{}
 
 	err := db.connect(connStr)
 
