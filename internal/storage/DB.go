@@ -2,12 +2,13 @@ package storage
 
 import (
 	"context"
+	"fmt"
 
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type DB struct {
-	DB *pgx.Conn
+	DB *pgxpool.Pool
 }
 
 func NewDB(connStr string) (*DB, error) {
@@ -23,23 +24,22 @@ func NewDB(connStr string) (*DB, error) {
 }
 
 func (d *DB) connect(connStr string) error {
-	conn, err := pgx.Connect(context.Background(), connStr)
+	pool, err := pgxpool.New(context.Background(), connStr)
 
 	if err != nil {
-		return err
+		return fmt.Errorf("db.connect: %v", err)
 	}
 
-	err = conn.Ping(context.Background())
+	err = pool.Ping(context.Background())
 
 	if err != nil {
-		return err
+		return fmt.Errorf("db.connect pool ping: %v", err)
 	}
 
-	d.DB = conn
-
+	d.DB = pool
 	return nil
 }
 
-func (d *DB) Close(ctx context.Context) error {
-	return d.DB.Close(ctx)
+func (d *DB) Close() {
+	d.DB.Close()
 }
