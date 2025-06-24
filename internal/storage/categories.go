@@ -24,9 +24,8 @@ func NewCategories(db *DB) (*Categories, error) {
 }
 
 // Get implements categories.Storager.
-func (c *Categories) Get(ID int) (models.Category, error) {
-	category := models.Category{}
-	sql, args, err := c.psql.Select("*").From("categories").Where("id = ?", ID).ToSql()
+func (c *Categories) Get(id int) (category models.Category, err error) {
+	sql, args, err := c.psql.Select("*").From("categories").Where("id = ?", id).ToSql()
 
 	if err != nil {
 		return category, fmt.Errorf("categoriesDb.get: %v", err)
