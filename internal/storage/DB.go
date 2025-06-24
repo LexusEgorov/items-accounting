@@ -17,7 +17,7 @@ func NewDB(connStr string) (*DB, error) {
 	err := db.connect(connStr)
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("newDb: %v", err)
 	}
 
 	return db, nil

@@ -2,6 +2,7 @@ package storage
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/LexusEgorov/items-accounting/internal/models"
 	"github.com/Masterminds/squirrel"
@@ -26,13 +27,13 @@ func (c *Categories) Get(ID int) (models.Category, error) {
 	sql, args, err := c.psql.Select("*").From("categories").Where("id = ?", ID).ToSql()
 
 	if err != nil {
-		return category, err
+		return category, fmt.Errorf("categoriesDb.get: %v", err)
 	}
 
 	err = c.db.DB.QueryRow(context.Background(), sql, args...).Scan(&category)
 
 	if err != nil {
-		return category, err
+		return category, fmt.Errorf("categoriesDb.get: %v", err)
 	}
 
 	return category, nil
