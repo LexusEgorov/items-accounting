@@ -13,7 +13,6 @@ type Categories struct {
 	psql squirrel.StatementBuilderType
 }
 
-// TODO: add logic for all methods
 func NewCategories(db *DB) (*Categories, error) {
 	return &Categories{
 		db:   db,
@@ -22,7 +21,7 @@ func NewCategories(db *DB) (*Categories, error) {
 }
 
 // Get implements categories.Storager.
-func (c *Categories) Get(id int) (category models.Category, err error) {
+func (c *Categories) Get(ctx context.Context, id int) (category models.Category, err error) {
 	errPrefix := "storage.Categories.Get"
 	sql, args, err := c.psql.Select("*").From("categories").Where("id = ?", id).ToSql()
 
@@ -30,7 +29,7 @@ func (c *Categories) Get(id int) (category models.Category, err error) {
 		return category, c.db.GetError(err, errPrefix)
 	}
 
-	err = c.db.DB.QueryRow(context.TODO(), sql, args...).Scan(&category)
+	err = c.db.DB.QueryRow(ctx, sql, args...).Scan(&category)
 
 	if err != nil {
 		return category, c.db.GetError(err, errPrefix)
@@ -40,7 +39,7 @@ func (c *Categories) Get(id int) (category models.Category, err error) {
 }
 
 // Add implements categories.Storager.
-func (c *Categories) Add(name string) (id int, err error) {
+func (c *Categories) Add(ctx context.Context, name string) (id int, err error) {
 	errPrefix := "storage.Categories.Add"
 	sql, args, err := c.psql.Insert("categories").
 		Columns("name").
@@ -52,7 +51,7 @@ func (c *Categories) Add(name string) (id int, err error) {
 		return 0, c.db.GetError(err, errPrefix)
 	}
 
-	err = c.db.DB.QueryRow(context.TODO(), sql, args...).Scan(&id)
+	err = c.db.DB.QueryRow(ctx, sql, args...).Scan(&id)
 
 	if err != nil {
 		return 0, c.db.GetError(err, errPrefix)
@@ -62,7 +61,7 @@ func (c *Categories) Add(name string) (id int, err error) {
 }
 
 // Delete implements categories.Storager.
-func (c *Categories) Delete(id int) error {
+func (c *Categories) Delete(ctx context.Context, id int) error {
 	errPrefix := "storage.Categories.Delete"
 	sql, args, err := c.psql.Delete("categories").Where("id = ?", id).ToSql()
 
@@ -70,7 +69,7 @@ func (c *Categories) Delete(id int) error {
 		return c.db.GetError(err, errPrefix)
 	}
 
-	result, err := c.db.DB.Exec(context.TODO(), sql, args...)
+	result, err := c.db.DB.Exec(ctx, sql, args...)
 	if err != nil {
 		return c.db.GetError(err, errPrefix)
 	}
@@ -83,7 +82,7 @@ func (c *Categories) Delete(id int) error {
 }
 
 // Set implements categories.Storager.
-func (c *Categories) Set(id int, name string) error {
+func (c *Categories) Set(ctx context.Context, id int, name string) error {
 	errPrefix := "storage.Categories.Set"
 	sql, args, err := c.psql.Update("categories").
 		Set("name", name).
@@ -94,7 +93,7 @@ func (c *Categories) Set(id int, name string) error {
 		return c.db.GetError(err, errPrefix)
 	}
 
-	result, err := c.db.DB.Exec(context.TODO(), sql, args...)
+	result, err := c.db.DB.Exec(ctx, sql, args...)
 
 	if err != nil {
 		return c.db.GetError(err, errPrefix)

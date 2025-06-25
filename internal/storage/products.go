@@ -14,7 +14,6 @@ type Products struct {
 	psql squirrel.StatementBuilderType
 }
 
-// TODO: add logic for methods
 func NewProducts(db *DB) (*Products, error) {
 	return &Products{
 		db:   db,
@@ -23,7 +22,7 @@ func NewProducts(db *DB) (*Products, error) {
 }
 
 // Add implements products.Storager.
-func (p *Products) Add(product models.ProductDTO) (id int, err error) {
+func (p *Products) Add(ctx context.Context, product models.ProductDTO) (id int, err error) {
 	errPrefix := "storage.Products.Add"
 	sql, args, err := p.psql.Insert("products").
 		Columns("category_id", "name", "price", "count").
@@ -35,7 +34,7 @@ func (p *Products) Add(product models.ProductDTO) (id int, err error) {
 		return 0, p.db.GetError(err, errPrefix)
 	}
 
-	err = p.db.DB.QueryRow(context.TODO(), sql, args...).Scan(&id)
+	err = p.db.DB.QueryRow(ctx, sql, args...).Scan(&id)
 
 	if err != nil {
 		return 0, p.db.GetError(err, errPrefix)
@@ -45,7 +44,7 @@ func (p *Products) Add(product models.ProductDTO) (id int, err error) {
 }
 
 // Delete implements products.Storager.
-func (p *Products) Delete(id int) error {
+func (p *Products) Delete(ctx context.Context, id int) error {
 	errPrefix := "storage.Products.Delete"
 	sql, args, err := p.psql.Delete("products").Where("id = ?", id).ToSql()
 
@@ -53,7 +52,7 @@ func (p *Products) Delete(id int) error {
 		return p.db.GetError(err, errPrefix)
 	}
 
-	result, err := p.db.DB.Exec(context.TODO(), sql, args...)
+	result, err := p.db.DB.Exec(ctx, sql, args...)
 	if err != nil {
 		return p.db.GetError(err, errPrefix)
 	}
@@ -66,7 +65,7 @@ func (p *Products) Delete(id int) error {
 }
 
 // Get implements products.Storager.
-func (p *Products) Get(id int) (product models.Product, err error) {
+func (p *Products) Get(ctx context.Context, id int) (product models.Product, err error) {
 	errPrefix := "storage.Products.Get"
 	sql, args, err := p.psql.Select("*").From("products").Where("id = ?", id).ToSql()
 
@@ -74,7 +73,7 @@ func (p *Products) Get(id int) (product models.Product, err error) {
 		return product, p.db.GetError(err, errPrefix)
 	}
 
-	err = p.db.DB.QueryRow(context.TODO(), sql, args...).Scan(&product)
+	err = p.db.DB.QueryRow(ctx, sql, args...).Scan(&product)
 
 	if err != nil {
 		return product, p.db.GetError(err, errPrefix)
@@ -84,7 +83,7 @@ func (p *Products) Get(id int) (product models.Product, err error) {
 }
 
 // Set implements products.Storager.
-func (p *Products) Set(product models.ProductDTO) error {
+func (p *Products) Set(ctx context.Context, product models.ProductDTO) error {
 	errPrefix := "storage.Products.Set"
 	sql, args, err := p.psql.Update("categories").
 		Set("category_id", product.CatID).
@@ -98,7 +97,7 @@ func (p *Products) Set(product models.ProductDTO) error {
 		return fmt.Errorf("set product: %v", err)
 	}
 
-	result, err := p.db.DB.Exec(context.TODO(), sql, args...)
+	result, err := p.db.DB.Exec(ctx, sql, args...)
 
 	if err != nil {
 		return p.db.GetError(err, errPrefix)
