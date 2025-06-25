@@ -23,6 +23,7 @@ require (
 
 require (
 	github.com/Masterminds/squirrel v1.5.4
+	github.com/jackc/pgerrcode v0.0.0-20240316143900-6e2875d9b438
 	github.com/jackc/pgx/v5 v5.7.5
 	github.com/labstack/echo/v4 v4.13.4
 	github.com/mfridman/interpolate v0.0.2 // indirect
