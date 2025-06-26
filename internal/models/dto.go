@@ -12,3 +12,7 @@ type ProductDTO struct {
 	Price int    `json:"price"`
 	Count int    `json:"count"`
 }
+
+type BadResponse struct {
+	Message string `json:"message"`
+}
