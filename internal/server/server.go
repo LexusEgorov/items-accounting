@@ -11,7 +11,7 @@ import (
 )
 
 type Server struct {
-	server echo.Echo
+	server *echo.Echo
 	logger *slog.Logger
 }
 
@@ -32,7 +32,7 @@ func New(handlers handlers, logger *slog.Logger) *Server {
 	productGroup.POST("/update", handlers.products.Set)
 
 	return &Server{
-		server: *echo.New(),
+		server: server,
 		logger: logger,
 	}
 }
@@ -40,7 +40,7 @@ func New(handlers handlers, logger *slog.Logger) *Server {
 func (s *Server) Run() {
 	errPrefix := "server.Run"
 	s.logger.Info("server starting on localhost:8080")
-	if err := s.server.Start(":8080"); err != nil {
+	if err := s.server.Start("0.0.0.0:8080"); err != nil {
 		if !errors.Is(err, http.ErrServerClosed) {
 			s.logger.Error(utils.GetError(errPrefix, err).Error())
 		}
