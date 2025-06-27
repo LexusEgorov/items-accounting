@@ -3,7 +3,6 @@ package app
 import (
 	"context"
 	"log/slog"
-	"time"
 
 	srv "github.com/LexusEgorov/items-accounting/internal/server"
 	"github.com/LexusEgorov/items-accounting/internal/services/categories"
@@ -23,22 +22,19 @@ func New(logger *slog.Logger) (*App, error) {
 	db, err := storage.NewDB("")
 
 	if err != nil {
-		logger.Error(utils.GetError(errPrefix, err).Error())
-		return nil, err
+		return nil, utils.GetError(errPrefix, err)
 	}
 
 	categoryStorage, err := storage.NewCategories(db)
 
 	if err != nil {
-		logger.Error(utils.GetError(errPrefix, err).Error())
-		return nil, err
+		return nil, utils.GetError(errPrefix, err)
 	}
 
 	productStorage, err := storage.NewProducts(db)
 
 	if err != nil {
-		logger.Error(utils.GetError(errPrefix, err).Error())
-		return nil, err
+		return nil, utils.GetError(errPrefix, err)
 	}
 
 	categoryManager := categories.New(categoryStorage)
@@ -58,13 +54,9 @@ func (a App) Run() {
 	go a.server.Run()
 }
 
-func (a App) Stop() {
+func (a App) Stop(ctx context.Context) {
 	errPrefix := "app.Stop"
 	a.logger.Info("Stopping app...")
-
-	timeout := 5 * time.Second
-	ctx, cancel := context.WithTimeout(context.Background(), timeout)
-	defer cancel()
 
 	doneCh := make(chan error)
 	go func() {

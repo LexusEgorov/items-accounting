@@ -14,10 +14,10 @@ import (
 )
 
 type CategoryManager interface {
-	Add(ctx context.Context, name string) (models.CategoryDTO, error)
-	Set(ctx context.Context, category models.CategoryDTO) (models.CategoryDTO, error)
-	Get(ctx context.Context, ID int) (models.CategoryDTO, error)
-	Delete(ctx context.Context, id int) error
+	Add(c context.Context, name string) (models.CategoryDTO, error)
+	Set(c context.Context, category models.CategoryDTO) (models.CategoryDTO, error)
+	Get(c context.Context, ID int) (models.CategoryDTO, error)
+	Delete(c context.Context, id int) error
 }
 
 type CategoryHandler struct {
@@ -32,104 +32,104 @@ func newCategoryHandler(manager CategoryManager, logger *slog.Logger) *CategoryH
 	}
 }
 
-func (c CategoryHandler) Get(ctx echo.Context) error {
-	errPrefix := "handler.Category.Get"
-	id, err := strconv.Atoi(ctx.Param("id"))
+func (cat CategoryHandler) Get(c echo.Context) error {
+	errPrefix := "server.Category.Get"
+	id, err := strconv.Atoi(c.Param("id"))
 
 	if err != nil {
-		c.logger.Error(utils.GetError(errPrefix, err).Error())
-		return utils.SendBadResponse(ctx, http.StatusNotFound, "id must be a number")
+		cat.logger.Error(utils.GetError(errPrefix, err).Error())
+		return utils.SendBadResponse(c, http.StatusNotFound, "id must be a number")
 	}
 
-	category, err := c.manager.Get(context.TODO(), id)
+	category, err := cat.manager.Get(context.TODO(), id)
 
 	if err != nil {
-		c.logger.Error(utils.GetError(errPrefix, err).Error())
+		cat.logger.Error(utils.GetError(errPrefix, err).Error())
 		//TODO: add check for notfoundErr
-		return utils.SendBadResponse(ctx, http.StatusInternalServerError, "ne rabotaet")
+		return utils.SendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
 	}
 
-	return ctx.JSON(http.StatusOK, category)
+	return c.JSON(http.StatusOK, category)
 }
 
-func (c CategoryHandler) Set(ctx echo.Context) error {
-	errPrefix := "handler.Category.Set"
-	bodyReader := ctx.Request().Body
+func (cat CategoryHandler) Set(c echo.Context) error {
+	errPrefix := "server.Category.Set"
+	bodyReader := c.Request().Body
 	defer bodyReader.Close()
 
 	body, err := io.ReadAll(bodyReader)
 
 	if err != nil {
-		c.logger.Error(utils.GetError(errPrefix, err).Error())
-		return utils.SendBadResponse(ctx, http.StatusBadRequest, "error while reading body")
+		cat.logger.Error(utils.GetError(errPrefix, err).Error())
+		return utils.SendBadResponse(c, http.StatusBadRequest, "error while reading body")
 	}
 
 	var category models.CategoryDTO
 	err = json.Unmarshal(body, &category)
 
 	if err != nil {
-		c.logger.Error(utils.GetError(errPrefix, err).Error())
-		return utils.SendBadResponse(ctx, http.StatusBadRequest, "error while reading body")
+		cat.logger.Error(utils.GetError(errPrefix, err).Error())
+		return utils.SendBadResponse(c, http.StatusBadRequest, "error while reading body")
 	}
 
-	updated, err := c.manager.Set(context.TODO(), category)
+	updated, err := cat.manager.Set(context.TODO(), category)
 
 	if err != nil {
-		c.logger.Error(utils.GetError(errPrefix, err).Error())
+		cat.logger.Error(utils.GetError(errPrefix, err).Error())
 		//TODO: add check for notfoundErr
-		return utils.SendBadResponse(ctx, http.StatusInternalServerError, "ne rabotaet")
+		return utils.SendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
 	}
 
-	return ctx.JSON(http.StatusOK, updated)
+	return c.JSON(http.StatusOK, updated)
 }
 
-func (c CategoryHandler) Delete(ctx echo.Context) error {
-	errPrefix := "handler.Category.Delete"
-	id, err := strconv.Atoi(ctx.Param("id"))
+func (cat CategoryHandler) Delete(c echo.Context) error {
+	errPrefix := "server.Category.Delete"
+	id, err := strconv.Atoi(c.Param("id"))
 
 	if err != nil {
-		c.logger.Error(utils.GetError(errPrefix, err).Error())
-		return utils.SendBadResponse(ctx, http.StatusNotFound, "id must be a number")
+		cat.logger.Error(utils.GetError(errPrefix, err).Error())
+		return utils.SendBadResponse(c, http.StatusNotFound, "id must be a number")
 	}
 
-	err = c.manager.Delete(context.TODO(), id)
+	err = cat.manager.Delete(context.TODO(), id)
 
 	if err != nil {
-		c.logger.Error(utils.GetError(errPrefix, err).Error())
+		cat.logger.Error(utils.GetError(errPrefix, err).Error())
 		//TODO: add check for notfoundErr
-		return utils.SendBadResponse(ctx, http.StatusInternalServerError, "ne rabotaet")
+		return utils.SendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
 	}
 
-	return ctx.JSON(http.StatusOK, nil)
+	return c.JSON(http.StatusOK, nil)
 }
 
-func (c CategoryHandler) Add(ctx echo.Context) error {
-	errPrefix := "handler.Category.Create"
-	bodyReader := ctx.Request().Body
+func (cat CategoryHandler) Add(c echo.Context) error {
+	errPrefix := "server.Category.Create"
+	bodyReader := c.Request().Body
 	defer bodyReader.Close()
 
 	body, err := io.ReadAll(bodyReader)
 
 	if err != nil {
-		c.logger.Error(utils.GetError(errPrefix, err).Error())
-		return utils.SendBadResponse(ctx, http.StatusBadRequest, "error while reading body")
+		cat.logger.Error(utils.GetError(errPrefix, err).Error())
+		return utils.SendBadResponse(c, http.StatusBadRequest, "error while reading body")
 	}
 
 	var category models.CategoryDTO
 	err = json.Unmarshal(body, &category)
 
 	if err != nil {
-		c.logger.Error(utils.GetError(errPrefix, err).Error())
-		return utils.SendBadResponse(ctx, http.StatusBadRequest, "error while reading body")
+		cat.logger.Error(utils.GetError(errPrefix, err).Error())
+		return utils.SendBadResponse(c, http.StatusBadRequest, "error while reading body")
 	}
 
-	created, err := c.manager.Add(context.TODO(), category.Name)
+	created, err := cat.manager.Add(context.TODO(), category.Name)
 
 	if err != nil {
-		c.logger.Error(utils.GetError(errPrefix, err).Error())
+		cat.logger.Error(utils.GetError(errPrefix, err).Error())
 		//TODO: add check for notfoundErr
-		return utils.SendBadResponse(ctx, http.StatusInternalServerError, "ne rabotaet")
+		return utils.SendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
 	}
 
-	return ctx.JSON(http.StatusCreated, created)
+	return c.JSON(http.StatusCreated, created)
 }

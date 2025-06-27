@@ -32,13 +32,13 @@ func newProductHandler(manager ProductManager, logger *slog.Logger) *ProductHand
 	}
 }
 
-func (p ProductHandler) Get(ctx echo.Context) error {
-	errPrefix := "handler.Product.Get"
-	id, err := strconv.Atoi(ctx.Param("id"))
+func (p ProductHandler) Get(c echo.Context) error {
+	errPrefix := "server.Product.Get"
+	id, err := strconv.Atoi(c.Param("id"))
 
 	if err != nil {
 		p.logger.Error(utils.GetError(errPrefix, err).Error())
-		return utils.SendBadResponse(ctx, http.StatusNotFound, "id must be a number")
+		return utils.SendBadResponse(c, http.StatusNotFound, "id must be a number")
 	}
 
 	product, err := p.manager.Get(context.TODO(), id)
@@ -46,22 +46,22 @@ func (p ProductHandler) Get(ctx echo.Context) error {
 	if err != nil {
 		p.logger.Error(utils.GetError(errPrefix, err).Error())
 		//TODO: add check for notfoundErr
-		return utils.SendBadResponse(ctx, http.StatusInternalServerError, "ne rabotaet")
+		return utils.SendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
 	}
 
-	return ctx.JSON(http.StatusOK, product)
+	return c.JSON(http.StatusOK, product)
 }
 
-func (p ProductHandler) Set(ctx echo.Context) error {
-	errPrefix := "handler.Product.Set"
-	bodyReader := ctx.Request().Body
+func (p ProductHandler) Set(c echo.Context) error {
+	errPrefix := "server.Product.Set"
+	bodyReader := c.Request().Body
 	defer bodyReader.Close()
 
 	body, err := io.ReadAll(bodyReader)
 
 	if err != nil {
 		p.logger.Error(utils.GetError(errPrefix, err).Error())
-		return utils.SendBadResponse(ctx, http.StatusBadRequest, "error while reading body")
+		return utils.SendBadResponse(c, http.StatusBadRequest, "error while reading body")
 	}
 
 	var product models.ProductDTO
@@ -69,7 +69,7 @@ func (p ProductHandler) Set(ctx echo.Context) error {
 
 	if err != nil {
 		p.logger.Error(utils.GetError(errPrefix, err).Error())
-		return utils.SendBadResponse(ctx, http.StatusBadRequest, "error while reading body")
+		return utils.SendBadResponse(c, http.StatusBadRequest, "error while reading body")
 	}
 
 	updated, err := p.manager.Set(context.TODO(), product)
@@ -77,22 +77,22 @@ func (p ProductHandler) Set(ctx echo.Context) error {
 	if err != nil {
 		p.logger.Error(utils.GetError(errPrefix, err).Error())
 		//TODO: add check for notfoundErr
-		return utils.SendBadResponse(ctx, http.StatusInternalServerError, "ne rabotaet")
+		return utils.SendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
 	}
 
-	return ctx.JSON(http.StatusOK, updated)
+	return c.JSON(http.StatusOK, updated)
 }
 
-func (p ProductHandler) Add(ctx echo.Context) error {
-	errPrefix := "handler.Product.Add"
-	bodyReader := ctx.Request().Body
+func (p ProductHandler) Add(c echo.Context) error {
+	errPrefix := "server.Product.Add"
+	bodyReader := c.Request().Body
 	defer bodyReader.Close()
 
 	body, err := io.ReadAll(bodyReader)
 
 	if err != nil {
 		p.logger.Error(utils.GetError(errPrefix, err).Error())
-		return utils.SendBadResponse(ctx, http.StatusBadRequest, "error while reading body")
+		return utils.SendBadResponse(c, http.StatusBadRequest, "error while reading body")
 	}
 
 	var product models.ProductDTO
@@ -100,7 +100,7 @@ func (p ProductHandler) Add(ctx echo.Context) error {
 
 	if err != nil {
 		p.logger.Error(utils.GetError(errPrefix, err).Error())
-		return utils.SendBadResponse(ctx, http.StatusBadRequest, "error while reading body")
+		return utils.SendBadResponse(c, http.StatusBadRequest, "error while reading body")
 	}
 
 	created, err := p.manager.Add(context.TODO(), product)
@@ -108,19 +108,19 @@ func (p ProductHandler) Add(ctx echo.Context) error {
 	if err != nil {
 		p.logger.Error(utils.GetError(errPrefix, err).Error())
 		//TODO: add check for notfoundErr
-		return utils.SendBadResponse(ctx, http.StatusInternalServerError, "ne rabotaet")
+		return utils.SendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
 	}
 
-	return ctx.JSON(http.StatusOK, created)
+	return c.JSON(http.StatusOK, created)
 }
 
-func (p ProductHandler) Delete(ctx echo.Context) error {
-	errPrefix := "handler.Product.Delete"
-	id, err := strconv.Atoi(ctx.Param("id"))
+func (p ProductHandler) Delete(c echo.Context) error {
+	errPrefix := "server.Product.Delete"
+	id, err := strconv.Atoi(c.Param("id"))
 
 	if err != nil {
 		p.logger.Error(utils.GetError(errPrefix, err).Error())
-		return utils.SendBadResponse(ctx, http.StatusNotFound, "id must be a number")
+		return utils.SendBadResponse(c, http.StatusNotFound, "id must be a number")
 	}
 
 	err = p.manager.Delete(context.TODO(), id)
@@ -128,8 +128,8 @@ func (p ProductHandler) Delete(ctx echo.Context) error {
 	if err != nil {
 		p.logger.Error(utils.GetError(errPrefix, err).Error())
 		//TODO: add check for notfoundErr
-		return utils.SendBadResponse(ctx, http.StatusInternalServerError, "ne rabotaet")
+		return utils.SendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
 	}
 
-	return ctx.JSON(http.StatusOK, nil)
+	return c.JSON(http.StatusOK, nil)
 }

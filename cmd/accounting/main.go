@@ -1,12 +1,13 @@
 package main
 
 import (
+	"context"
 	"log/slog"
 	"os"
 	"os/signal"
+	"time"
 
 	"github.com/LexusEgorov/items-accounting/internal/app"
-	"github.com/labstack/gommon/log"
 )
 
 func main() {
@@ -24,6 +25,10 @@ func main() {
 	signal.Notify(stopChan, os.Interrupt)
 
 	<-stopChan
-	log.Info("Recieved interrupt signal")
-	app.Stop()
+	logger.Info("Recieved interrupt signal")
+	timeout := 5 * time.Second
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	defer cancel()
+
+	app.Stop(ctx)
 }
