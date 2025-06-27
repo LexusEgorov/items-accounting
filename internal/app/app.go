@@ -19,7 +19,7 @@ type App struct {
 
 func New(logger *slog.Logger) (*App, error) {
 	errPrefix := "app.New"
-	db, err := storage.NewDB("")
+	db, err := storage.NewDB("postgres://root:root@db:5432/accounting-db?sslmode=disable")
 
 	if err != nil {
 		return nil, utils.GetError(errPrefix, err)

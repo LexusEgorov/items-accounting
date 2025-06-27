@@ -10,7 +10,7 @@ import (
 
 // TODO: add config for connection
 func main() {
-	connStr := ""
+	connStr := "postgres://root:root@db:5432/accounting-db?sslmode=disable"
 	connConfig, err := pgx.ParseConfig(connStr)
 
 	if err != nil {
@@ -24,7 +24,7 @@ func main() {
 		log.Fatalf("migrator: goose error: %v", err)
 	}
 
-	if err := goose.Up(db, "../migrations"); err != nil {
+	if err := goose.Up(db, "/app/migrations"); err != nil {
 		log.Fatalf("migrator: goose error: %v", err)
 	}
 }
