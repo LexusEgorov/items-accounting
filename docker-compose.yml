@@ -5,9 +5,18 @@ services:
       context: .
       dockerfile: Dockerfile.accounting
     depends_on:
+      - migrator
       - db
     ports:
       - 44044:8080
+  migrator:
+    image: migrator
+    build:
+      context: .
+      dockerfile: Dockerfile.migrator
+    depends_on:
+      - db
+    restart: "no"
   db:
     image: postgres:latest
     environment:
