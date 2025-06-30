@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"log"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -11,11 +12,14 @@ import (
 )
 
 func main() {
-	logger := slog.Default()
+	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
+		AddSource: true,
+	}))
+
 	app, err := app.New(logger)
 
 	if err != nil {
-		logger.Error(err.Error())
+		log.Fatalf("main: %v", err)
 		return
 	}
 
