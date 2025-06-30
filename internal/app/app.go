@@ -4,6 +4,7 @@ import (
 	"context"
 	"log/slog"
 
+	"github.com/LexusEgorov/items-accounting/internal/config"
 	srv "github.com/LexusEgorov/items-accounting/internal/server"
 	"github.com/LexusEgorov/items-accounting/internal/services/categories"
 	"github.com/LexusEgorov/items-accounting/internal/services/products"
@@ -17,9 +18,9 @@ type App struct {
 	logger *slog.Logger
 }
 
-func New(logger *slog.Logger) (*App, error) {
+func New(logger *slog.Logger, config *config.Config) (*App, error) {
 	errPrefix := "app.New"
-	db, err := storage.NewDB("postgres://root:root@db:5432/accounting-db?sslmode=disable")
+	db, err := storage.NewDB(config.DB)
 
 	if err != nil {
 		return nil, utils.GetError(errPrefix, err)
@@ -41,7 +42,7 @@ func New(logger *slog.Logger) (*App, error) {
 	productManager := products.New(productStorage)
 
 	handlers := srv.NewHandlers(categoryManager, productManager, logger)
-	server := srv.New(*handlers, logger)
+	server := srv.New(*handlers, logger, config.Server)
 
 	return &App{
 		server: server,

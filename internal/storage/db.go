@@ -9,6 +9,7 @@ import (
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 
+	"github.com/LexusEgorov/items-accounting/internal/config"
 	"github.com/LexusEgorov/items-accounting/internal/models"
 )
 
@@ -16,9 +17,10 @@ type DB struct {
 	DB *pgxpool.Pool
 }
 
-func NewDB(connStr string) (*DB, error) {
+func NewDB(config config.DBConfig) (*DB, error) {
 	db := &DB{}
 
+	connStr := fmt.Sprintf("postgres://%s:%s@db:5432/%s?sslmode=disable", config.User, config.Password, config.Name)
 	err := db.connect(connStr)
 
 	if err != nil {

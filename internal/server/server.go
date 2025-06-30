@@ -3,9 +3,11 @@ package server
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log/slog"
 	"net/http"
 
+	"github.com/LexusEgorov/items-accounting/internal/config"
 	"github.com/LexusEgorov/items-accounting/internal/utils"
 	"github.com/labstack/echo/v4"
 )
@@ -13,9 +15,11 @@ import (
 type Server struct {
 	server *echo.Echo
 	logger *slog.Logger
+	config config.ServerConfig
 }
 
-func New(handlers handlers, logger *slog.Logger) *Server {
+// TODO: middleware with cancel request by config.MaxResponseTime
+func New(handlers handlers, logger *slog.Logger, config config.ServerConfig) *Server {
 	server := echo.New()
 
 	categoryGroup := server.Group("categories")
@@ -34,13 +38,15 @@ func New(handlers handlers, logger *slog.Logger) *Server {
 	return &Server{
 		server: server,
 		logger: logger,
+		config: config,
 	}
 }
 
 func (s *Server) Run() {
 	errPrefix := "server.Run"
-	s.logger.Info("server starting on localhost:8080")
-	if err := s.server.Start("0.0.0.0:8080"); err != nil {
+	serverAddr := fmt.Sprintf("%s:%d", s.config.Addr, s.config.Port)
+	s.logger.Info(fmt.Sprintf("server isstarting on %s", serverAddr))
+	if err := s.server.Start(serverAddr); err != nil {
 		if !errors.Is(err, http.ErrServerClosed) {
 			s.logger.Error(utils.GetError(errPrefix, err).Error())
 		}

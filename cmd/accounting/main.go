@@ -9,14 +9,21 @@ import (
 	"time"
 
 	"github.com/LexusEgorov/items-accounting/internal/app"
+	"github.com/LexusEgorov/items-accounting/internal/config"
 )
 
 func main() {
+	config, err := config.New()
+
+	if err != nil {
+		log.Fatalf("main: %v", err)
+	}
+
 	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
 		AddSource: true,
 	}))
 
-	app, err := app.New(logger)
+	app, err := app.New(logger, config)
 
 	if err != nil {
 		log.Fatalf("main: %v", err)
