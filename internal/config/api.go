@@ -1,7 +1,5 @@
 package config
 
-//TODO: read env
-
 import (
 	"errors"
 	"flag"
@@ -17,9 +15,10 @@ import (
 )
 
 type ServerConfig struct {
-	Port            int           `yaml:"port"`
-	Addr            string        `yaml:"address"`
-	MaxResponseTime time.Duration `yaml:"maxResponseTime"`
+	Port            int    `yaml:"port"`
+	Addr            string `yaml:"address"`
+	maxResponseTime string `yaml:"maxResponseTime"`
+	MaxResponseTime time.Duration
 }
 
 type DBConfig struct {
@@ -45,6 +44,12 @@ func New() (cfg *Config, err error) {
 	} else {
 		cfg, err = readFileConfig(configPath)
 	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	cfg.Server.MaxResponseTime, err = time.ParseDuration(cfg.Server.maxResponseTime)
 
 	if err != nil {
 		return nil, err
