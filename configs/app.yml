@@ -1,0 +1,8 @@
+server:
+  port: 8080
+  address: "0.0.0.0"
+  maxResponseTime: "5s"
+db:
+  user: "root"
+  password: "root"
+  name: "accounting-db"
