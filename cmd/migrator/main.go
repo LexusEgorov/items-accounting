@@ -3,6 +3,8 @@ package main
 import (
 	"log"
 
+	"github.com/LexusEgorov/items-accounting/internal/config"
+	"github.com/LexusEgorov/items-accounting/internal/utils"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/stdlib"
 	"github.com/pressly/goose/v3"
@@ -10,7 +12,13 @@ import (
 
 // TODO: add config for connection
 func main() {
-	connStr := "postgres://root:root@db:5432/accounting-db?sslmode=disable"
+	cfg, err := config.NewMigratorConfig()
+
+	if err != nil {
+		log.Fatalf("migrator: %v", err)
+	}
+
+	connStr := utils.GetConnStr(cfg.User, cfg.Password, cfg.Name)
 	connConfig, err := pgx.ParseConfig(connStr)
 
 	if err != nil {
