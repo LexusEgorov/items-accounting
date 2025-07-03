@@ -17,6 +17,9 @@ services:
     depends_on:
       - db
     restart: "no"
+    command: ["-p=${DB_PASSWORD}", "-m=${MIGRATIONS_PATH}", "-n=${DB_NAME}", "-u=${DB_USER}"]
+    volumes:
+     - ./migrations:/app/migrations
   db:
     image: postgres:latest
     environment:

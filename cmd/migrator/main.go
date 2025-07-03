@@ -10,7 +10,6 @@ import (
 	"github.com/pressly/goose/v3"
 )
 
-// TODO: add config for connection
 func main() {
 	cfg, err := config.NewMigratorConfig()
 
@@ -32,7 +31,7 @@ func main() {
 		log.Fatalf("migrator: goose error: %v", err)
 	}
 
-	if err := goose.Up(db, "/app/migrations"); err != nil {
+	if err := goose.Up(db, cfg.MigrationsPath); err != nil {
 		log.Fatalf("migrator: goose error: %v", err)
 	}
 }

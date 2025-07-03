@@ -43,5 +43,10 @@ func NewMigratorConfig() (*MigratorConfig, error) {
 
 	return &MigratorConfig{
 		MigrationsPath: migrationsPath,
+		DBConfig: DBConfig{
+			User:     user,
+			Password: password,
+			Name:     name,
+		},
 	}, nil
 }
