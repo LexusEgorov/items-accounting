@@ -49,11 +49,13 @@ func New() (cfg *Config, err error) {
 		return nil, err
 	}
 
-	cfg.Server.MaxResponseTime, err = time.ParseDuration(cfg.Server.maxResponseTime)
+	// cfg.Server.MaxResponseTime, err = time.ParseDuration(cfg.Server.maxResponseTime)
 
-	if err != nil {
-		return nil, err
-	}
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	cfg.Server.MaxResponseTime = time.Hour
 
 	err = checkConfig(cfg)
 
@@ -97,7 +99,7 @@ func checkServerConfig(cfg *ServerConfig) error {
 	}
 
 	if cfg.MaxResponseTime.Milliseconds() <= 0 {
-		return models.ErrBadConfigPort
+		return models.ErrBadResponseTime
 	}
 
 	return nil

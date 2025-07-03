@@ -9,6 +9,9 @@ services:
       - db
     ports:
       - 44044:8080
+    command: ["-config=${CONFIG_PATH}"]
+    volumes:
+      - ./configs:/app/configs
   migrator:
     image: migrator
     build:

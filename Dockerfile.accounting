@@ -29,6 +29,8 @@ WORKDIR /app
 
 #2.3 Копируем собранное приложение
 COPY --from=builder /app/accounting ./
+#2.4 Копируем файлы конфигурации
+COPY --from=builder /app/configs ./configs
 
-#2.4 Запуск
+#2.5 Запуск
 ENTRYPOINT [ "./accounting" ]
