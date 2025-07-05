@@ -45,7 +45,7 @@ func New(handlers handlers, logger *slog.Logger, config config.ServerConfig) *Se
 func (s *Server) Run() {
 	errPrefix := "server.Run"
 	serverAddr := fmt.Sprintf("%s:%d", s.config.Addr, s.config.Port)
-	s.logger.Info(fmt.Sprintf("server isstarting on %s", serverAddr))
+	s.logger.Info(fmt.Sprintf("server is starting on %s", serverAddr))
 	if err := s.server.Start(serverAddr); err != nil {
 		if !errors.Is(err, http.ErrServerClosed) {
 			s.logger.Error(utils.GetError(errPrefix, err).Error())

@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"log/slog"
 	"os"
@@ -15,8 +14,6 @@ import (
 
 func main() {
 	config, err := config.New()
-
-	fmt.Printf("config: %v", config)
 
 	if err != nil {
 		log.Fatalf("main: %v", err)

@@ -15,10 +15,9 @@ import (
 )
 
 type ServerConfig struct {
-	Port            int    `yaml:"port"`
-	Addr            string `yaml:"address"`
-	maxResponseTime string `yaml:"maxResponseTime"`
-	MaxResponseTime time.Duration
+	Port            int           `yaml:"port"`
+	Addr            string        `yaml:"address"`
+	MaxResponseTime time.Duration `yaml:"maxResponseTime"`
 }
 
 type DBConfig struct {
@@ -48,14 +47,6 @@ func New() (cfg *Config, err error) {
 	if err != nil {
 		return nil, err
 	}
-
-	// cfg.Server.MaxResponseTime, err = time.ParseDuration(cfg.Server.maxResponseTime)
-
-	// if err != nil {
-	// 	return nil, err
-	// }
-
-	cfg.Server.MaxResponseTime = time.Hour
 
 	err = checkConfig(cfg)
 
