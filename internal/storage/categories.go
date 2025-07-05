@@ -29,7 +29,12 @@ func (c *Categories) Get(ctx context.Context, id int) (category models.Category,
 		return category, c.db.GetError(err, errPrefix)
 	}
 
-	err = c.db.DB.QueryRow(ctx, sql, args...).Scan(&category)
+	err = c.db.DB.QueryRow(ctx, sql, args...).Scan(
+		&category.ID,
+		&category.Name,
+		&category.Created,
+		&category.Updated,
+	)
 
 	if err != nil {
 		return category, c.db.GetError(err, errPrefix)

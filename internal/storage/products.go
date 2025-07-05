@@ -73,7 +73,15 @@ func (p *Products) Get(ctx context.Context, id int) (product models.Product, err
 		return product, p.db.GetError(err, errPrefix)
 	}
 
-	err = p.db.DB.QueryRow(ctx, sql, args...).Scan(&product)
+	err = p.db.DB.QueryRow(ctx, sql, args...).Scan(
+		&product.ID,
+		&product.CatID,
+		&product.Name,
+		&product.Price,
+		&product.Count,
+		&product.Created,
+		&product.Updated,
+	)
 
 	if err != nil {
 		return product, p.db.GetError(err, errPrefix)
