@@ -41,7 +41,7 @@ func (p ProductHandler) Get(c echo.Context) error {
 		return utils.SendBadResponse(c, http.StatusNotFound, "id must be a number")
 	}
 
-	product, err := p.manager.Get(context.TODO(), id)
+	product, err := p.manager.Get(c.Request().Context(), id)
 
 	if err != nil {
 		p.logger.Error(utils.GetError(errPrefix, err).Error())
@@ -72,7 +72,7 @@ func (p ProductHandler) Set(c echo.Context) error {
 		return utils.SendBadResponse(c, http.StatusBadRequest, "error while reading body")
 	}
 
-	updated, err := p.manager.Set(context.TODO(), product)
+	updated, err := p.manager.Set(c.Request().Context(), product)
 
 	if err != nil {
 		p.logger.Error(utils.GetError(errPrefix, err).Error())
@@ -103,7 +103,7 @@ func (p ProductHandler) Add(c echo.Context) error {
 		return utils.SendBadResponse(c, http.StatusBadRequest, "error while reading body")
 	}
 
-	created, err := p.manager.Add(context.TODO(), product)
+	created, err := p.manager.Add(c.Request().Context(), product)
 
 	if err != nil {
 		p.logger.Error(utils.GetError(errPrefix, err).Error())
@@ -123,7 +123,7 @@ func (p ProductHandler) Delete(c echo.Context) error {
 		return utils.SendBadResponse(c, http.StatusNotFound, "id must be a number")
 	}
 
-	err = p.manager.Delete(context.TODO(), id)
+	err = p.manager.Delete(c.Request().Context(), id)
 
 	if err != nil {
 		p.logger.Error(utils.GetError(errPrefix, err).Error())

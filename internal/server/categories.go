@@ -41,7 +41,7 @@ func (cat CategoryHandler) Get(c echo.Context) error {
 		return utils.SendBadResponse(c, http.StatusNotFound, "id must be a number")
 	}
 
-	category, err := cat.manager.Get(context.TODO(), id)
+	category, err := cat.manager.Get(c.Request().Context(), id)
 
 	if err != nil {
 		cat.logger.Error(utils.GetError(errPrefix, err).Error())
@@ -72,7 +72,7 @@ func (cat CategoryHandler) Set(c echo.Context) error {
 		return utils.SendBadResponse(c, http.StatusBadRequest, "error while reading body")
 	}
 
-	updated, err := cat.manager.Set(context.TODO(), category)
+	updated, err := cat.manager.Set(c.Request().Context(), category)
 
 	if err != nil {
 		cat.logger.Error(utils.GetError(errPrefix, err).Error())
@@ -92,7 +92,7 @@ func (cat CategoryHandler) Delete(c echo.Context) error {
 		return utils.SendBadResponse(c, http.StatusNotFound, "id must be a number")
 	}
 
-	err = cat.manager.Delete(context.TODO(), id)
+	err = cat.manager.Delete(c.Request().Context(), id)
 
 	if err != nil {
 		cat.logger.Error(utils.GetError(errPrefix, err).Error())
@@ -123,7 +123,7 @@ func (cat CategoryHandler) Add(c echo.Context) error {
 		return utils.SendBadResponse(c, http.StatusBadRequest, "error while reading body")
 	}
 
-	created, err := cat.manager.Add(context.TODO(), category.Name)
+	created, err := cat.manager.Add(c.Request().Context(), category.Name)
 
 	if err != nil {
 		cat.logger.Error(utils.GetError(errPrefix, err).Error())
