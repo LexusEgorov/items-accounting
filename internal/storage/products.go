@@ -93,7 +93,7 @@ func (p *Products) Get(ctx context.Context, id int) (product models.Product, err
 // Set implements products.Storager.
 func (p *Products) Set(ctx context.Context, product models.ProductDTO) error {
 	errPrefix := "storage.Products.Set"
-	sql, args, err := p.psql.Update("categories").
+	sql, args, err := p.psql.Update("products").
 		Set("category_id", product.CatID).
 		Set("name", product.Name).
 		Set("price", product.Price).
