@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/LexusEgorov/items-accounting/internal/config"
+	"github.com/LexusEgorov/items-accounting/internal/middleware"
 	"github.com/LexusEgorov/items-accounting/internal/utils"
 	"github.com/labstack/echo/v4"
 )
@@ -18,9 +19,11 @@ type Server struct {
 	config config.ServerConfig
 }
 
-// TODO: middleware with cancel request by config.MaxResponseTime
 func New(handlers handlers, logger *slog.Logger, config config.ServerConfig) *Server {
 	server := echo.New()
+	middleware := middleware.New(logger, config.MaxResponseTime)
+
+	server.Use(middleware.WithRecover, middleware.WithLogging, middleware.WithCancel)
 
 	categoryGroup := server.Group("categories")
 	productGroup := server.Group("products")
