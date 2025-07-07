@@ -1,20 +1,21 @@
 package models
 
 import (
+	"errors"
 	"fmt"
 )
 
 var (
-	ErrUnique                = fmt.Errorf("already exists")
-	ErrNotFound              = fmt.Errorf("not found")
-	ErrNotUpdated            = fmt.Errorf("not updated")
-	ErrConfigPathNotProvided = fmt.Errorf("config path didn't provide")
-	ErrBadConfigPort         = fmt.Errorf("port must be upper than 0")
-	ErrBadResponseTime       = fmt.Errorf("response time must be upper than 0ms")
-	ErrBadUserName           = fmt.Errorf("username is required")
-	ErrBadPassword           = fmt.Errorf("password is required")
-	ErrBadDBName             = fmt.Errorf("db name is required")
-	ErrMigrationsNotProvided = fmt.Errorf("migrations path didn't provide")
+	ErrUnique                = errors.New("already exists")
+	ErrNotFound              = errors.New("not found")
+	ErrNotUpdated            = errors.New("not updated")
+	ErrConfigPathNotProvided = errors.New("config path didn't provide")
+	ErrBadConfigPort         = errors.New("port must be upper than 0")
+	ErrBadResponseTime       = errors.New("response time must be upper than 0ms")
+	ErrBadUserName           = errors.New("username is required")
+	ErrBadPassword           = errors.New("password is required")
+	ErrBadDBName             = errors.New("db name is required")
+	ErrMigrationsNotProvided = errors.New("migrations path didn't provide")
 )
 
 func NewEmptyErr(field string) error {
