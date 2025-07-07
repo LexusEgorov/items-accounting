@@ -35,14 +35,12 @@ func newCategoryHandler(manager CategoryManager, logger *slog.Logger) *CategoryH
 func (cat CategoryHandler) Get(c echo.Context) error {
 	errPrefix := "server.Category.Get"
 	id, err := strconv.Atoi(c.Param("id"))
-
 	if err != nil {
 		cat.logger.Error(utils.GetError(errPrefix, err).Error())
 		return utils.SendBadResponse(c, http.StatusNotFound, "id must be a number")
 	}
 
 	category, err := cat.manager.Get(c.Request().Context(), id)
-
 	if err != nil {
 		cat.logger.Error(utils.GetError(errPrefix, err).Error())
 		//TODO: add check for notfoundErr
@@ -58,7 +56,6 @@ func (cat CategoryHandler) Set(c echo.Context) error {
 	defer bodyReader.Close()
 
 	body, err := io.ReadAll(bodyReader)
-
 	if err != nil {
 		cat.logger.Error(utils.GetError(errPrefix, err).Error())
 		return utils.SendBadResponse(c, http.StatusBadRequest, "error while reading body")
@@ -66,14 +63,12 @@ func (cat CategoryHandler) Set(c echo.Context) error {
 
 	var category models.CategoryDTO
 	err = json.Unmarshal(body, &category)
-
 	if err != nil {
 		cat.logger.Error(utils.GetError(errPrefix, err).Error())
 		return utils.SendBadResponse(c, http.StatusBadRequest, "error while reading body")
 	}
 
 	updated, err := cat.manager.Set(c.Request().Context(), category)
-
 	if err != nil {
 		cat.logger.Error(utils.GetError(errPrefix, err).Error())
 		//TODO: add check for notfoundErr
@@ -86,14 +81,12 @@ func (cat CategoryHandler) Set(c echo.Context) error {
 func (cat CategoryHandler) Delete(c echo.Context) error {
 	errPrefix := "server.Category.Delete"
 	id, err := strconv.Atoi(c.Param("id"))
-
 	if err != nil {
 		cat.logger.Error(utils.GetError(errPrefix, err).Error())
 		return utils.SendBadResponse(c, http.StatusNotFound, "id must be a number")
 	}
 
 	err = cat.manager.Delete(c.Request().Context(), id)
-
 	if err != nil {
 		cat.logger.Error(utils.GetError(errPrefix, err).Error())
 		//TODO: add check for notfoundErr
@@ -109,7 +102,6 @@ func (cat CategoryHandler) Add(c echo.Context) error {
 	defer bodyReader.Close()
 
 	body, err := io.ReadAll(bodyReader)
-
 	if err != nil {
 		cat.logger.Error(utils.GetError(errPrefix, err).Error())
 		return utils.SendBadResponse(c, http.StatusBadRequest, "error while reading body")
@@ -117,14 +109,12 @@ func (cat CategoryHandler) Add(c echo.Context) error {
 
 	var category models.CategoryDTO
 	err = json.Unmarshal(body, &category)
-
 	if err != nil {
 		cat.logger.Error(utils.GetError(errPrefix, err).Error())
 		return utils.SendBadResponse(c, http.StatusBadRequest, "error while reading body")
 	}
 
 	created, err := cat.manager.Add(c.Request().Context(), category.Name)
-
 	if err != nil {
 		cat.logger.Error(utils.GetError(errPrefix, err).Error())
 		//TODO: add check for notfoundErr

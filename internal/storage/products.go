@@ -29,13 +29,11 @@ func (p *Products) Add(ctx context.Context, product models.ProductDTO) (id int, 
 		Values(product.CatID, product.Name, product.Price, product.Count).
 		Suffix("RETURNING id").
 		ToSql()
-
 	if err != nil {
 		return 0, p.db.GetError(err, errPrefix)
 	}
 
 	err = p.db.DB.QueryRow(ctx, sql, args...).Scan(&id)
-
 	if err != nil {
 		return 0, p.db.GetError(err, errPrefix)
 	}
@@ -47,7 +45,6 @@ func (p *Products) Add(ctx context.Context, product models.ProductDTO) (id int, 
 func (p *Products) Delete(ctx context.Context, id int) error {
 	errPrefix := "storage.Products.Delete"
 	sql, args, err := p.psql.Delete("products").Where("id = ?", id).ToSql()
-
 	if err != nil {
 		return p.db.GetError(err, errPrefix)
 	}
@@ -68,7 +65,6 @@ func (p *Products) Delete(ctx context.Context, id int) error {
 func (p *Products) Get(ctx context.Context, id int) (product models.Product, err error) {
 	errPrefix := "storage.Products.Get"
 	sql, args, err := p.psql.Select("*").From("products").Where("id = ?", id).ToSql()
-
 	if err != nil {
 		return product, p.db.GetError(err, errPrefix)
 	}
@@ -82,7 +78,6 @@ func (p *Products) Get(ctx context.Context, id int) (product models.Product, err
 		&product.Created,
 		&product.Updated,
 	)
-
 	if err != nil {
 		return product, p.db.GetError(err, errPrefix)
 	}
@@ -100,13 +95,11 @@ func (p *Products) Set(ctx context.Context, product models.ProductDTO) error {
 		Set("count", product.Count).
 		Where("id = ?", product.ID).
 		ToSql()
-
 	if err != nil {
 		return fmt.Errorf("set product: %v", err)
 	}
 
 	result, err := p.db.DB.Exec(ctx, sql, args...)
-
 	if err != nil {
 		return p.db.GetError(err, errPrefix)
 	}

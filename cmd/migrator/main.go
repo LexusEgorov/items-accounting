@@ -12,14 +12,12 @@ import (
 
 func main() {
 	cfg, err := config.NewMigratorConfig()
-
 	if err != nil {
 		log.Fatalf("migrator: %v", err)
 	}
 
 	connStr := utils.GetConnStr(cfg.User, cfg.Password, cfg.Name)
 	connConfig, err := pgx.ParseConfig(connStr)
-
 	if err != nil {
 		log.Fatalf("migrator: failed to parse conn config: %v", err)
 	}

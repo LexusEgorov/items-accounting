@@ -23,7 +23,6 @@ func NewDB(config config.DBConfig) (*DB, error) {
 
 	connStr := utils.GetConnStr(config.User, config.Password, config.Name)
 	err := db.connect(connStr)
-
 	if err != nil {
 		return nil, fmt.Errorf("newDb: %v", err)
 	}
@@ -47,13 +46,11 @@ func (d *DB) GetError(err error, prefix string) error {
 
 func (d *DB) connect(connStr string) error {
 	pool, err := pgxpool.New(context.Background(), connStr)
-
 	if err != nil {
 		return fmt.Errorf("db.connect: %v", err)
 	}
 
 	err = pool.Ping(context.Background())
-
 	if err != nil {
 		return fmt.Errorf("db.connect pool ping: %v", err)
 	}

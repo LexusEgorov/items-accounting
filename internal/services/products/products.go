@@ -38,7 +38,6 @@ func (c Products) Add(ctx context.Context, product models.ProductDTO) (models.Pr
 	}
 
 	id, err := c.storage.Add(ctx, product)
-
 	if err != nil {
 		return models.ProductDTO{}, utils.GetError(errPrefix, err)
 	}
@@ -61,7 +60,6 @@ func (c Products) Set(ctx context.Context, product models.ProductDTO) (models.Pr
 	}
 
 	err := c.storage.Set(ctx, product)
-
 	if err != nil {
 		return models.ProductDTO{}, utils.GetError(errPrefix, err)
 	}
@@ -78,7 +76,6 @@ func (c Products) Get(ctx context.Context, id int) (models.ProductDTO, error) {
 	}
 
 	product, err := c.storage.Get(ctx, id)
-
 	if err != nil {
 		return models.ProductDTO{}, utils.GetError(errPrefix, err)
 	}

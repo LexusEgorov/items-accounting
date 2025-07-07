@@ -33,7 +33,6 @@ type Config struct {
 
 func New() (cfg *Config, err error) {
 	configPath, err := fetchConfigPath()
-
 	if err != nil {
 		if !errors.Is(err, models.ErrConfigPathNotProvided) {
 			return nil, fmt.Errorf("read config error: %v", err)
@@ -43,13 +42,11 @@ func New() (cfg *Config, err error) {
 	} else {
 		cfg, err = readFileConfig(configPath)
 	}
-
 	if err != nil {
 		return nil, err
 	}
 
 	err = checkConfig(cfg)
-
 	if err != nil {
 		return nil, err
 	}
@@ -99,7 +96,6 @@ func checkServerConfig(cfg *ServerConfig) error {
 // Читает конфиг из env
 func readEnvConfig() (*Config, error) {
 	port, err := strconv.Atoi(os.Getenv("SERVER_PORT"))
-
 	if err != nil {
 		return nil, err
 	}
@@ -136,7 +132,6 @@ func fetchConfigPath() (string, error) {
 
 	if path == "" {
 		err := godotenv.Load()
-
 		if err != nil {
 			return "", err
 		}

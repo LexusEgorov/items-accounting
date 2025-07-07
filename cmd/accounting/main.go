@@ -14,7 +14,6 @@ import (
 
 func main() {
 	config, err := config.New()
-
 	if err != nil {
 		log.Fatalf("main: %v", err)
 	}
@@ -24,7 +23,6 @@ func main() {
 	}))
 
 	app, err := app.New(logger, config)
-
 	if err != nil {
 		log.Fatalf("main: %v", err)
 		return

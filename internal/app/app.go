@@ -21,19 +21,16 @@ type App struct {
 func New(logger *slog.Logger, config *config.Config) (*App, error) {
 	errPrefix := "app.New"
 	db, err := storage.NewDB(config.DB)
-
 	if err != nil {
 		return nil, utils.GetError(errPrefix, err)
 	}
 
 	categoryStorage, err := storage.NewCategories(db)
-
 	if err != nil {
 		return nil, utils.GetError(errPrefix, err)
 	}
 
 	productStorage, err := storage.NewProducts(db)
-
 	if err != nil {
 		return nil, utils.GetError(errPrefix, err)
 	}

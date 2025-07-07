@@ -60,7 +60,6 @@ func (s *Server) Stop(ctx context.Context) error {
 	errPrefix := "server.Stop"
 	s.logger.Info("stopping server...")
 	err := s.server.Shutdown(ctx)
-
 	if err != nil {
 		s.logger.Error(utils.GetError(errPrefix, err).Error())
 	}

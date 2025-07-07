@@ -24,7 +24,6 @@ func NewCategories(db *DB) (*Categories, error) {
 func (c *Categories) Get(ctx context.Context, id int) (category models.Category, err error) {
 	errPrefix := "storage.Categories.Get"
 	sql, args, err := c.psql.Select("*").From("categories").Where("id = ?", id).ToSql()
-
 	if err != nil {
 		return category, c.db.GetError(err, errPrefix)
 	}
@@ -35,7 +34,6 @@ func (c *Categories) Get(ctx context.Context, id int) (category models.Category,
 		&category.Created,
 		&category.Updated,
 	)
-
 	if err != nil {
 		return category, c.db.GetError(err, errPrefix)
 	}
@@ -51,13 +49,11 @@ func (c *Categories) Add(ctx context.Context, name string) (id int, err error) {
 		Values(name).
 		Suffix("RETURNING id").
 		ToSql()
-
 	if err != nil {
 		return 0, c.db.GetError(err, errPrefix)
 	}
 
 	err = c.db.DB.QueryRow(ctx, sql, args...).Scan(&id)
-
 	if err != nil {
 		return 0, c.db.GetError(err, errPrefix)
 	}
@@ -93,13 +89,11 @@ func (c *Categories) Set(ctx context.Context, id int, name string) error {
 		Set("name", name).
 		Where("id = ?", id).
 		ToSql()
-
 	if err != nil {
 		return c.db.GetError(err, errPrefix)
 	}
 
 	result, err := c.db.DB.Exec(ctx, sql, args...)
-
 	if err != nil {
 		return c.db.GetError(err, errPrefix)
 	}

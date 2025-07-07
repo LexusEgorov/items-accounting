@@ -33,7 +33,6 @@ func (c Categories) Add(ctx context.Context, name string) (models.CategoryDTO, e
 	}
 
 	id, err := c.storage.Add(ctx, name)
-
 	if err != nil {
 		return models.CategoryDTO{}, utils.GetError(errPrefix, err)
 	}
@@ -57,7 +56,6 @@ func (c Categories) Set(ctx context.Context, category models.CategoryDTO) (model
 	}
 
 	err := c.storage.Set(ctx, category.ID, category.Name)
-
 	if err != nil {
 		return models.CategoryDTO{}, utils.GetError(errPrefix, err)
 	}
@@ -68,7 +66,6 @@ func (c Categories) Set(ctx context.Context, category models.CategoryDTO) (model
 func (c Categories) Get(ctx context.Context, ID int) (models.CategoryDTO, error) {
 	errPrefix := "service.Categories.Get"
 	category, err := c.storage.Get(ctx, ID)
-
 	if err != nil {
 		return models.CategoryDTO{}, utils.GetError(errPrefix, err)
 	}

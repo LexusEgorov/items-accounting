@@ -28,7 +28,6 @@ func (m middleware) WithLogging(next echo.HandlerFunc) echo.HandlerFunc {
 		errPrefix := "middleware.WithLogging"
 		timeStart := time.Now()
 		err := next(c)
-
 		if err != nil {
 			m.logger.Error(utils.GetError(errPrefix, err).Error())
 		}
