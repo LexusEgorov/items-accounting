@@ -79,9 +79,9 @@ func (m middleware) WithRecover(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		defer func() {
 			if r := recover(); r != nil {
-				m.logger.Error("Recovered: %v", r)
+				m.logger.Error("recovered: %v", r)
 				c.JSON(echo.ErrInternalServerError.Code, models.BadResponse{
-					Message: "internal server error",
+					Message: http.StatusText(echo.ErrInternalServerError.Code),
 				})
 			}
 		}()
