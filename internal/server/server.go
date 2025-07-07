@@ -21,9 +21,15 @@ type Server struct {
 
 func New(handlers handlers, logger *slog.Logger, config config.ServerConfig) *Server {
 	server := echo.New()
+
+	server.Server = &http.Server{
+		ReadTimeout:  config.MaxResponseTime,
+		WriteTimeout: config.MaxResponseTime,
+	}
+
 	middleware := middleware.New(logger, config.MaxResponseTime)
 
-	server.Use(middleware.WithRecover, middleware.WithLogging, middleware.WithCancel)
+	server.Use(middleware.WithRecover, middleware.WithLogging)
 
 	categoryGroup := server.Group("categories")
 	productGroup := server.Group("products")

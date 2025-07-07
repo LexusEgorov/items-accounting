@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"context"
 	"log/slog"
 	"net/http"
 	"time"
@@ -48,30 +47,6 @@ func (m middleware) WithLogging(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		return err
-	}
-}
-
-func (m middleware) WithCancel(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		ctx, cancel := context.WithTimeout(c.Request().Context(), m.maxResponseTime)
-		defer cancel()
-
-		c.SetRequest(c.Request().WithContext(ctx))
-
-		done := make(chan error, 1)
-
-		go func() {
-			done <- next(c)
-		}()
-
-		select {
-		case err := <-done:
-			return err
-		case <-ctx.Done():
-			return c.JSON(echo.ErrInternalServerError.Code, models.BadResponse{
-				Message: "request timeout",
-			})
-		}
 	}
 }
 
