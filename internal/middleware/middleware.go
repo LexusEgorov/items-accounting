@@ -31,19 +31,16 @@ func (m middleware) WithLogging(next echo.HandlerFunc) echo.HandlerFunc {
 			m.logger.Error(utils.GetError(errPrefix, err).Error())
 		}
 
+		innerLogger := m.logger.With(
+			"method", c.Request().Method,
+			"url", c.Request().URL,
+			"duration", time.Since(timeStart))
+
 		code := c.Response().Status
 		if code >= http.StatusBadRequest && code <= http.StatusNetworkAuthenticationRequired {
-			m.logger.Error("request result",
-				"code", code,
-				"method", c.Request().Method,
-				"url", c.Request().URL,
-				"duration", time.Since(timeStart))
+			innerLogger.Error("request result", "code", code)
 		} else {
-			m.logger.Info("request result",
-				"code", code,
-				"method", c.Request().Method,
-				"url", c.Request().URL,
-				"duration", time.Since(timeStart))
+			innerLogger.Info("request result", "code", code)
 		}
 
 		return err
