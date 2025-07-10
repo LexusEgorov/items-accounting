@@ -19,7 +19,7 @@ func main() {
 	}
 
 	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
-		AddSource: true,
+		AddSource: config.Logger.AddSource,
 	}))
 
 	app, err := app.New(logger, config)

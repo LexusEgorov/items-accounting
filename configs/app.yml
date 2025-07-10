@@ -6,3 +6,5 @@ db:
   user: "root"
   password: "root"
   name: "accounting-db"
+logger:
+  source: true

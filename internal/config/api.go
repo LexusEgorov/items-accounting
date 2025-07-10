@@ -26,9 +26,14 @@ type DBConfig struct {
 	Password string `yaml:"password"`
 }
 
+type LoggerConfig struct {
+	AddSource bool `yaml:"source"`
+}
+
 type Config struct {
 	Server ServerConfig `yaml:"server"`
 	DB     DBConfig     `yaml:"db"`
+	Logger LoggerConfig `yaml:"config"`
 }
 
 func New() (cfg *Config, err error) {
@@ -130,6 +135,13 @@ func readEnvConfig(cfg *Config) *Config {
 	if dbName != "" {
 		cfg.DB.Name = dbName
 	}
+
+	source, err := strconv.ParseBool(os.Getenv("LOGGER_SOURCE"))
+	if err != nil {
+		return nil
+	}
+
+	cfg.Logger.AddSource = source
 
 	return cfg
 }
