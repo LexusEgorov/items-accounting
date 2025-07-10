@@ -9,9 +9,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/LexusEgorov/items-accounting/internal/models"
-	"github.com/LexusEgorov/items-accounting/internal/utils"
 	"github.com/labstack/echo/v4"
+
+	"github.com/LexusEgorov/items-accounting/internal/models"
 )
 
 type CategoryManager interface {
@@ -37,17 +37,17 @@ func (cat CategoryHandler) Get(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		cat.logger.Error(err.Error())
-		return utils.SendBadResponse(c, http.StatusNotFound, "id must be a number")
+		return sendBadResponse(c, http.StatusNotFound, "id must be a number")
 	}
 
 	category, err := cat.manager.Get(c.Request().Context(), id)
 	if err != nil {
 		if errors.Is(err, models.ErrNotFound) {
-			return utils.SendBadResponse(c, http.StatusNotFound, "Not found")
+			return sendBadResponse(c, http.StatusNotFound, "Not found")
 		}
 		cat.logger.Error(err.Error())
 
-		return utils.SendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
+		return sendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
 	}
 
 	return c.JSON(http.StatusOK, category)
@@ -60,24 +60,24 @@ func (cat CategoryHandler) Set(c echo.Context) error {
 	body, err := io.ReadAll(bodyReader)
 	if err != nil {
 		cat.logger.Error(err.Error())
-		return utils.SendBadResponse(c, http.StatusBadRequest, "error while reading body")
+		return sendBadResponse(c, http.StatusBadRequest, "error while reading body")
 	}
 
 	var category models.CategoryDTO
 	err = json.Unmarshal(body, &category)
 	if err != nil {
 		cat.logger.Error(err.Error())
-		return utils.SendBadResponse(c, http.StatusBadRequest, "error while reading body")
+		return sendBadResponse(c, http.StatusBadRequest, "error while reading body")
 	}
 
 	updated, err := cat.manager.Set(c.Request().Context(), category)
 	if err != nil {
 		if errors.Is(err, models.ErrNotFound) {
-			return utils.SendBadResponse(c, http.StatusNotFound, "Not found")
+			return sendBadResponse(c, http.StatusNotFound, "Not found")
 		}
 
 		cat.logger.Error(err.Error())
-		return utils.SendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
+		return sendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
 	}
 
 	return c.JSON(http.StatusOK, updated)
@@ -87,17 +87,17 @@ func (cat CategoryHandler) Delete(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		cat.logger.Error(err.Error())
-		return utils.SendBadResponse(c, http.StatusNotFound, "id must be a number")
+		return sendBadResponse(c, http.StatusNotFound, "id must be a number")
 	}
 
 	err = cat.manager.Delete(c.Request().Context(), id)
 	if err != nil {
 		if errors.Is(err, models.ErrNotFound) {
-			return utils.SendBadResponse(c, http.StatusNotFound, "Not found")
+			return sendBadResponse(c, http.StatusNotFound, "Not found")
 		}
 
 		cat.logger.Error(err.Error())
-		return utils.SendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
+		return sendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
 	}
 
 	return nil
@@ -110,24 +110,24 @@ func (cat CategoryHandler) Add(c echo.Context) error {
 	body, err := io.ReadAll(bodyReader)
 	if err != nil {
 		cat.logger.Error(err.Error())
-		return utils.SendBadResponse(c, http.StatusBadRequest, "error while reading body")
+		return sendBadResponse(c, http.StatusBadRequest, "error while reading body")
 	}
 
 	var category models.CategoryDTO
 	err = json.Unmarshal(body, &category)
 	if err != nil {
 		cat.logger.Error(err.Error())
-		return utils.SendBadResponse(c, http.StatusBadRequest, "error while reading body")
+		return sendBadResponse(c, http.StatusBadRequest, "error while reading body")
 	}
 
 	created, err := cat.manager.Add(c.Request().Context(), category.Name)
 	if err != nil {
 		if errors.Is(err, models.ErrNotFound) {
-			return utils.SendBadResponse(c, http.StatusNotFound, "Not found")
+			return sendBadResponse(c, http.StatusNotFound, "Not found")
 		}
 
 		cat.logger.Error(err.Error())
-		return utils.SendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
+		return sendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
 	}
 
 	return c.JSON(http.StatusCreated, created)

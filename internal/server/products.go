@@ -9,9 +9,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/LexusEgorov/items-accounting/internal/models"
-	"github.com/LexusEgorov/items-accounting/internal/utils"
 	"github.com/labstack/echo/v4"
+
+	"github.com/LexusEgorov/items-accounting/internal/models"
 )
 
 type ProductManager interface {
@@ -37,17 +37,17 @@ func (p ProductHandler) Get(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		p.logger.Error(err.Error())
-		return utils.SendBadResponse(c, http.StatusNotFound, "id must be a number")
+		return sendBadResponse(c, http.StatusNotFound, "id must be a number")
 	}
 
 	product, err := p.manager.Get(c.Request().Context(), id)
 	if err != nil {
 		if errors.Is(err, models.ErrNotFound) {
-			return utils.SendBadResponse(c, http.StatusNotFound, "Not found")
+			return sendBadResponse(c, http.StatusNotFound, "Not found")
 		}
 
 		p.logger.Error(err.Error())
-		return utils.SendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
+		return sendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
 	}
 
 	return c.JSON(http.StatusOK, product)
@@ -60,24 +60,24 @@ func (p ProductHandler) Set(c echo.Context) error {
 	body, err := io.ReadAll(bodyReader)
 	if err != nil {
 		p.logger.Error(err.Error())
-		return utils.SendBadResponse(c, http.StatusBadRequest, "error while reading body")
+		return sendBadResponse(c, http.StatusBadRequest, "error while reading body")
 	}
 
 	var product models.ProductDTO
 	err = json.Unmarshal(body, &product)
 	if err != nil {
 		p.logger.Error(err.Error())
-		return utils.SendBadResponse(c, http.StatusBadRequest, "error while reading body")
+		return sendBadResponse(c, http.StatusBadRequest, "error while reading body")
 	}
 
 	updated, err := p.manager.Set(c.Request().Context(), product)
 	if err != nil {
 		if errors.Is(err, models.ErrNotFound) {
-			return utils.SendBadResponse(c, http.StatusNotFound, "Not found")
+			return sendBadResponse(c, http.StatusNotFound, "Not found")
 		}
 
 		p.logger.Error(err.Error())
-		return utils.SendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
+		return sendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
 	}
 
 	return c.JSON(http.StatusOK, updated)
@@ -90,24 +90,24 @@ func (p ProductHandler) Add(c echo.Context) error {
 	body, err := io.ReadAll(bodyReader)
 	if err != nil {
 		p.logger.Error(err.Error())
-		return utils.SendBadResponse(c, http.StatusBadRequest, "error while reading body")
+		return sendBadResponse(c, http.StatusBadRequest, "error while reading body")
 	}
 
 	var product models.ProductDTO
 	err = json.Unmarshal(body, &product)
 	if err != nil {
 		p.logger.Error(err.Error())
-		return utils.SendBadResponse(c, http.StatusBadRequest, "error while reading body")
+		return sendBadResponse(c, http.StatusBadRequest, "error while reading body")
 	}
 
 	created, err := p.manager.Add(c.Request().Context(), product)
 	if err != nil {
 		if errors.Is(err, models.ErrNotFound) {
-			return utils.SendBadResponse(c, http.StatusNotFound, "Not found")
+			return sendBadResponse(c, http.StatusNotFound, "Not found")
 		}
 
 		p.logger.Error(err.Error())
-		return utils.SendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
+		return sendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
 	}
 
 	return c.JSON(http.StatusOK, created)
@@ -117,17 +117,17 @@ func (p ProductHandler) Delete(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		p.logger.Error(err.Error())
-		return utils.SendBadResponse(c, http.StatusNotFound, "id must be a number")
+		return sendBadResponse(c, http.StatusNotFound, "id must be a number")
 	}
 
 	err = p.manager.Delete(c.Request().Context(), id)
 	if err != nil {
 		if errors.Is(err, models.ErrNotFound) {
-			return utils.SendBadResponse(c, http.StatusNotFound, "Not found")
+			return sendBadResponse(c, http.StatusNotFound, "Not found")
 		}
 
 		p.logger.Error(err.Error())
-		return utils.SendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
+		return sendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
 	}
 
 	return nil

@@ -11,17 +11,16 @@ import (
 
 	"github.com/LexusEgorov/items-accounting/internal/config"
 	"github.com/LexusEgorov/items-accounting/internal/models"
-	"github.com/LexusEgorov/items-accounting/internal/utils"
 )
 
 type DB struct {
 	DB *pgxpool.Pool
 }
 
-func NewDB(config config.DBConfig) (*DB, error) {
+func NewDB(cfg config.DBConfig) (*DB, error) {
 	db := &DB{}
 
-	connStr := utils.GetConnStr(config.User, config.Password, config.Name)
+	connStr := config.GetConnStr(cfg.User, cfg.Password, cfg.Name)
 	err := db.connect(connStr)
 	if err != nil {
 		return nil, fmt.Errorf("newDb: %v", err)

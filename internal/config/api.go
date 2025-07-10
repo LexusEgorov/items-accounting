@@ -182,3 +182,7 @@ func fetchConfigPath() (string, error) {
 
 	return path, nil
 }
+
+func GetConnStr(user, password, name string) string {
+	return fmt.Sprintf("postgres://%s:%s@db:5432/%s?sslmode=disable", user, password, name)
+}
