@@ -103,7 +103,7 @@ func (cat CategoryHandler) Delete(c echo.Context) error {
 		return utils.SendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
 	}
 
-	return c.JSON(http.StatusOK, nil)
+	return nil
 }
 
 func (cat CategoryHandler) Add(c echo.Context) error {

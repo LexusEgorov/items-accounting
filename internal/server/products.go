@@ -134,5 +134,5 @@ func (p ProductHandler) Delete(c echo.Context) error {
 		return utils.SendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
 	}
 
-	return c.JSON(http.StatusOK, nil)
+	return nil
 }
