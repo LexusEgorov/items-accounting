@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/LexusEgorov/items-accounting/internal/models"
-	"github.com/LexusEgorov/items-accounting/internal/utils"
 )
 
 type Storager interface {
@@ -25,16 +24,14 @@ func New(storage Storager) *Categories {
 }
 
 func (c Categories) Add(ctx context.Context, name string) (models.CategoryDTO, error) {
-	errPrefix := "service.Categories.Add"
-
 	//TODO: move to validateFn
 	if name == "" {
-		return models.CategoryDTO{}, utils.GetError(errPrefix, models.NewEmptyErr("name"))
+		return models.CategoryDTO{}, models.NewEmptyErr("name")
 	}
 
 	id, err := c.storage.Add(ctx, name)
 	if err != nil {
-		return models.CategoryDTO{}, utils.GetError(errPrefix, err)
+		return models.CategoryDTO{}, err
 	}
 
 	return models.CategoryDTO{
@@ -44,42 +41,38 @@ func (c Categories) Add(ctx context.Context, name string) (models.CategoryDTO, e
 }
 
 func (c Categories) Set(ctx context.Context, category models.CategoryDTO) (models.CategoryDTO, error) {
-	errPrefix := "service.Categories.Set"
-
 	//TODO: move to validateFn
 	if category.Name == "" {
-		return models.CategoryDTO{}, utils.GetError(errPrefix, models.NewEmptyErr("name"))
+		return models.CategoryDTO{}, models.NewEmptyErr("name")
 	}
 
 	if category.ID == 0 {
-		return models.CategoryDTO{}, utils.GetError(errPrefix, models.NewEmptyErr("id"))
+		return models.CategoryDTO{}, models.NewEmptyErr("id")
 	}
 
 	err := c.storage.Set(ctx, category.ID, category.Name)
 	if err != nil {
-		return models.CategoryDTO{}, utils.GetError(errPrefix, err)
+		return models.CategoryDTO{}, err
 	}
 
 	return category, nil
 }
 
 func (c Categories) Get(ctx context.Context, ID int) (models.CategoryDTO, error) {
-	errPrefix := "service.Categories.Get"
 	category, err := c.storage.Get(ctx, ID)
 	if err != nil {
-		return models.CategoryDTO{}, utils.GetError(errPrefix, err)
+		return models.CategoryDTO{}, err
 	}
 
 	return category.ToDTO(), nil
 }
 
 func (c Categories) Delete(ctx context.Context, id int) error {
-	errPrefix := "service.Categories.Delete"
 
 	//TODO: move to validateFn
 	if id <= 0 {
-		return utils.GetError(errPrefix, models.NewEmptyErr("id"))
+		return models.NewEmptyErr("id")
 	}
 
-	return utils.GetError(errPrefix, c.storage.Delete(ctx, id))
+	return c.storage.Delete(ctx, id)
 }

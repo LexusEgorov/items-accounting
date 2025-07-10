@@ -34,10 +34,9 @@ func newCategoryHandler(manager CategoryManager, logger *slog.Logger) *CategoryH
 }
 
 func (cat CategoryHandler) Get(c echo.Context) error {
-	errPrefix := "server.Category.Get"
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		cat.logger.Error(utils.GetError(errPrefix, err).Error())
+		cat.logger.Error(err.Error())
 		return utils.SendBadResponse(c, http.StatusNotFound, "id must be a number")
 	}
 
@@ -46,7 +45,7 @@ func (cat CategoryHandler) Get(c echo.Context) error {
 		if errors.Is(err, models.ErrNotFound) {
 			return utils.SendBadResponse(c, http.StatusNotFound, "Not found")
 		}
-		cat.logger.Error(utils.GetError(errPrefix, err).Error())
+		cat.logger.Error(err.Error())
 
 		return utils.SendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
 	}
@@ -55,20 +54,19 @@ func (cat CategoryHandler) Get(c echo.Context) error {
 }
 
 func (cat CategoryHandler) Set(c echo.Context) error {
-	errPrefix := "server.Category.Set"
 	bodyReader := c.Request().Body
 	defer bodyReader.Close()
 
 	body, err := io.ReadAll(bodyReader)
 	if err != nil {
-		cat.logger.Error(utils.GetError(errPrefix, err).Error())
+		cat.logger.Error(err.Error())
 		return utils.SendBadResponse(c, http.StatusBadRequest, "error while reading body")
 	}
 
 	var category models.CategoryDTO
 	err = json.Unmarshal(body, &category)
 	if err != nil {
-		cat.logger.Error(utils.GetError(errPrefix, err).Error())
+		cat.logger.Error(err.Error())
 		return utils.SendBadResponse(c, http.StatusBadRequest, "error while reading body")
 	}
 
@@ -78,7 +76,7 @@ func (cat CategoryHandler) Set(c echo.Context) error {
 			return utils.SendBadResponse(c, http.StatusNotFound, "Not found")
 		}
 
-		cat.logger.Error(utils.GetError(errPrefix, err).Error())
+		cat.logger.Error(err.Error())
 		return utils.SendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
 	}
 
@@ -86,10 +84,9 @@ func (cat CategoryHandler) Set(c echo.Context) error {
 }
 
 func (cat CategoryHandler) Delete(c echo.Context) error {
-	errPrefix := "server.Category.Delete"
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		cat.logger.Error(utils.GetError(errPrefix, err).Error())
+		cat.logger.Error(err.Error())
 		return utils.SendBadResponse(c, http.StatusNotFound, "id must be a number")
 	}
 
@@ -99,7 +96,7 @@ func (cat CategoryHandler) Delete(c echo.Context) error {
 			return utils.SendBadResponse(c, http.StatusNotFound, "Not found")
 		}
 
-		cat.logger.Error(utils.GetError(errPrefix, err).Error())
+		cat.logger.Error(err.Error())
 		return utils.SendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
 	}
 
@@ -107,20 +104,19 @@ func (cat CategoryHandler) Delete(c echo.Context) error {
 }
 
 func (cat CategoryHandler) Add(c echo.Context) error {
-	errPrefix := "server.Category.Create"
 	bodyReader := c.Request().Body
 	defer bodyReader.Close()
 
 	body, err := io.ReadAll(bodyReader)
 	if err != nil {
-		cat.logger.Error(utils.GetError(errPrefix, err).Error())
+		cat.logger.Error(err.Error())
 		return utils.SendBadResponse(c, http.StatusBadRequest, "error while reading body")
 	}
 
 	var category models.CategoryDTO
 	err = json.Unmarshal(body, &category)
 	if err != nil {
-		cat.logger.Error(utils.GetError(errPrefix, err).Error())
+		cat.logger.Error(err.Error())
 		return utils.SendBadResponse(c, http.StatusBadRequest, "error while reading body")
 	}
 
@@ -130,7 +126,7 @@ func (cat CategoryHandler) Add(c echo.Context) error {
 			return utils.SendBadResponse(c, http.StatusNotFound, "Not found")
 		}
 
-		cat.logger.Error(utils.GetError(errPrefix, err).Error())
+		cat.logger.Error(err.Error())
 		return utils.SendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
 	}
 

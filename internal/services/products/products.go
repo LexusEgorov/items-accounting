@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/LexusEgorov/items-accounting/internal/models"
-	"github.com/LexusEgorov/items-accounting/internal/utils"
 )
 
 type Storager interface {
@@ -25,21 +24,19 @@ func New(storage Storager) *Products {
 }
 
 func (c Products) Add(ctx context.Context, product models.ProductDTO) (models.ProductDTO, error) {
-	errPrefix := "service.Products.Add"
-
 	//TODO: move to validateFn
 	if product.CatID == 0 {
-		return models.ProductDTO{}, utils.GetError(errPrefix, models.NewEmptyErr("categoryId"))
+		return models.ProductDTO{}, models.NewEmptyErr("categoryId")
 	}
 
 	//TODO: move to validateFn
 	if product.Name == "" {
-		return models.ProductDTO{}, utils.GetError(errPrefix, models.NewEmptyErr("name"))
+		return models.ProductDTO{}, models.NewEmptyErr("name")
 	}
 
 	id, err := c.storage.Add(ctx, product)
 	if err != nil {
-		return models.ProductDTO{}, utils.GetError(errPrefix, err)
+		return models.ProductDTO{}, err
 	}
 
 	product.ID = id
@@ -47,49 +44,43 @@ func (c Products) Add(ctx context.Context, product models.ProductDTO) (models.Pr
 }
 
 func (c Products) Set(ctx context.Context, product models.ProductDTO) (models.ProductDTO, error) {
-	errPrefix := "service.Products.Set"
-
 	//TODO: move to validateFn
 	if product.CatID <= 0 {
-		return models.ProductDTO{}, utils.GetError(errPrefix, models.NewEmptyErr("categoryId"))
+		return models.ProductDTO{}, models.NewEmptyErr("categoryId")
 	}
 
 	//TODO: move to validateFn
 	if product.Name == "" {
-		return models.ProductDTO{}, utils.GetError(errPrefix, models.NewEmptyErr("name"))
+		return models.ProductDTO{}, models.NewEmptyErr("name")
 	}
 
 	err := c.storage.Set(ctx, product)
 	if err != nil {
-		return models.ProductDTO{}, utils.GetError(errPrefix, err)
+		return models.ProductDTO{}, err
 	}
 
 	return product, nil
 }
 
 func (c Products) Get(ctx context.Context, id int) (models.ProductDTO, error) {
-	errPrefix := "service.Products.Get"
-
 	//TODO: move to validateFn
 	if id <= 0 {
-		return models.ProductDTO{}, utils.GetError(errPrefix, models.NewEmptyErr("id"))
+		return models.ProductDTO{}, models.NewEmptyErr("id")
 	}
 
 	product, err := c.storage.Get(ctx, id)
 	if err != nil {
-		return models.ProductDTO{}, utils.GetError(errPrefix, err)
+		return models.ProductDTO{}, err
 	}
 
 	return product.ToDTO(), nil
 }
 
 func (c Products) Delete(ctx context.Context, id int) error {
-	errPrefix := "service.Products.Delete"
-
 	//TODO: move to validateFn
 	if id <= 0 {
-		return utils.GetError(errPrefix, models.NewEmptyErr("id"))
+		return models.NewEmptyErr("id")
 	}
 
-	return utils.GetError(errPrefix, c.storage.Delete(ctx, id))
+	return c.storage.Delete(ctx, id)
 }

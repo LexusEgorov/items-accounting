@@ -34,10 +34,9 @@ func newProductHandler(manager ProductManager, logger *slog.Logger) *ProductHand
 }
 
 func (p ProductHandler) Get(c echo.Context) error {
-	errPrefix := "server.Product.Get"
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		p.logger.Error(utils.GetError(errPrefix, err).Error())
+		p.logger.Error(err.Error())
 		return utils.SendBadResponse(c, http.StatusNotFound, "id must be a number")
 	}
 
@@ -47,7 +46,7 @@ func (p ProductHandler) Get(c echo.Context) error {
 			return utils.SendBadResponse(c, http.StatusNotFound, "Not found")
 		}
 
-		p.logger.Error(utils.GetError(errPrefix, err).Error())
+		p.logger.Error(err.Error())
 		return utils.SendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
 	}
 
@@ -55,20 +54,19 @@ func (p ProductHandler) Get(c echo.Context) error {
 }
 
 func (p ProductHandler) Set(c echo.Context) error {
-	errPrefix := "server.Product.Set"
 	bodyReader := c.Request().Body
 	defer bodyReader.Close()
 
 	body, err := io.ReadAll(bodyReader)
 	if err != nil {
-		p.logger.Error(utils.GetError(errPrefix, err).Error())
+		p.logger.Error(err.Error())
 		return utils.SendBadResponse(c, http.StatusBadRequest, "error while reading body")
 	}
 
 	var product models.ProductDTO
 	err = json.Unmarshal(body, &product)
 	if err != nil {
-		p.logger.Error(utils.GetError(errPrefix, err).Error())
+		p.logger.Error(err.Error())
 		return utils.SendBadResponse(c, http.StatusBadRequest, "error while reading body")
 	}
 
@@ -78,7 +76,7 @@ func (p ProductHandler) Set(c echo.Context) error {
 			return utils.SendBadResponse(c, http.StatusNotFound, "Not found")
 		}
 
-		p.logger.Error(utils.GetError(errPrefix, err).Error())
+		p.logger.Error(err.Error())
 		return utils.SendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
 	}
 
@@ -86,20 +84,19 @@ func (p ProductHandler) Set(c echo.Context) error {
 }
 
 func (p ProductHandler) Add(c echo.Context) error {
-	errPrefix := "server.Product.Add"
 	bodyReader := c.Request().Body
 	defer bodyReader.Close()
 
 	body, err := io.ReadAll(bodyReader)
 	if err != nil {
-		p.logger.Error(utils.GetError(errPrefix, err).Error())
+		p.logger.Error(err.Error())
 		return utils.SendBadResponse(c, http.StatusBadRequest, "error while reading body")
 	}
 
 	var product models.ProductDTO
 	err = json.Unmarshal(body, &product)
 	if err != nil {
-		p.logger.Error(utils.GetError(errPrefix, err).Error())
+		p.logger.Error(err.Error())
 		return utils.SendBadResponse(c, http.StatusBadRequest, "error while reading body")
 	}
 
@@ -109,7 +106,7 @@ func (p ProductHandler) Add(c echo.Context) error {
 			return utils.SendBadResponse(c, http.StatusNotFound, "Not found")
 		}
 
-		p.logger.Error(utils.GetError(errPrefix, err).Error())
+		p.logger.Error(err.Error())
 		return utils.SendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
 	}
 
@@ -117,10 +114,9 @@ func (p ProductHandler) Add(c echo.Context) error {
 }
 
 func (p ProductHandler) Delete(c echo.Context) error {
-	errPrefix := "server.Product.Delete"
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		p.logger.Error(utils.GetError(errPrefix, err).Error())
+		p.logger.Error(err.Error())
 		return utils.SendBadResponse(c, http.StatusNotFound, "id must be a number")
 	}
 
@@ -130,7 +126,7 @@ func (p ProductHandler) Delete(c echo.Context) error {
 			return utils.SendBadResponse(c, http.StatusNotFound, "Not found")
 		}
 
-		p.logger.Error(utils.GetError(errPrefix, err).Error())
+		p.logger.Error(err.Error())
 		return utils.SendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
 	}
 

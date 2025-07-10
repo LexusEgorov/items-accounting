@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/LexusEgorov/items-accounting/internal/models"
-	"github.com/LexusEgorov/items-accounting/internal/utils"
 	"github.com/labstack/echo/v4"
 )
 
@@ -24,11 +23,10 @@ func New(logger *slog.Logger, maxResponseTime time.Duration) *middleware {
 
 func (m middleware) WithLogging(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		errPrefix := "middleware.WithLogging"
 		timeStart := time.Now()
 		err := next(c)
 		if err != nil {
-			m.logger.Error(utils.GetError(errPrefix, err).Error())
+			m.logger.Error(err.Error())
 		}
 
 		innerLogger := m.logger.With(

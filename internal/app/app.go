@@ -9,7 +9,6 @@ import (
 	"github.com/LexusEgorov/items-accounting/internal/services/categories"
 	"github.com/LexusEgorov/items-accounting/internal/services/products"
 	"github.com/LexusEgorov/items-accounting/internal/storage"
-	"github.com/LexusEgorov/items-accounting/internal/utils"
 )
 
 // TODO: application
@@ -19,20 +18,19 @@ type App struct {
 }
 
 func New(logger *slog.Logger, config *config.Config) (*App, error) {
-	errPrefix := "app.New"
 	db, err := storage.NewDB(config.DB)
 	if err != nil {
-		return nil, utils.GetError(errPrefix, err)
+		return nil, err
 	}
 
 	categoryStorage, err := storage.NewCategories(db)
 	if err != nil {
-		return nil, utils.GetError(errPrefix, err)
+		return nil, err
 	}
 
 	productStorage, err := storage.NewProducts(db)
 	if err != nil {
-		return nil, utils.GetError(errPrefix, err)
+		return nil, err
 	}
 
 	categoryManager := categories.New(categoryStorage)
@@ -53,7 +51,6 @@ func (a App) Run() {
 }
 
 func (a App) Stop(ctx context.Context) {
-	errPrefix := "app.Stop"
 	a.logger.Info("Stopping app...")
 
 	doneCh := make(chan error)
@@ -64,7 +61,7 @@ func (a App) Stop(ctx context.Context) {
 	select {
 	case err := <-doneCh:
 		if err != nil {
-			a.logger.Error(utils.GetError(errPrefix, err).Error())
+			a.logger.Error(err.Error())
 			return
 		}
 

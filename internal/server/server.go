@@ -9,7 +9,6 @@ import (
 
 	"github.com/LexusEgorov/items-accounting/internal/config"
 	"github.com/LexusEgorov/items-accounting/internal/middleware"
-	"github.com/LexusEgorov/items-accounting/internal/utils"
 	"github.com/labstack/echo/v4"
 )
 
@@ -52,22 +51,20 @@ func New(handlers handlers, logger *slog.Logger, config config.ServerConfig) *Se
 }
 
 func (s *Server) Run() {
-	errPrefix := "server.Run"
 	serverAddr := fmt.Sprintf("%s:%d", s.config.Addr, s.config.Port)
 	s.logger.Info(fmt.Sprintf("server is starting on %s", serverAddr))
 	if err := s.server.Start(serverAddr); err != nil {
 		if !errors.Is(err, http.ErrServerClosed) {
-			s.logger.Error(utils.GetError(errPrefix, err).Error())
+			s.logger.Error(err.Error())
 		}
 	}
 }
 
 func (s *Server) Stop(ctx context.Context) error {
-	errPrefix := "server.Stop"
 	s.logger.Info("stopping server...")
 	err := s.server.Shutdown(ctx)
 	if err != nil {
-		s.logger.Error(utils.GetError(errPrefix, err).Error())
+		s.logger.Error(err.Error())
 	}
 
 	return err
