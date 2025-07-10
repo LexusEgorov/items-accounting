@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"io"
 	"log/slog"
 	"net/http"
@@ -42,8 +43,11 @@ func (p ProductHandler) Get(c echo.Context) error {
 
 	product, err := p.manager.Get(c.Request().Context(), id)
 	if err != nil {
+		if errors.Is(err, models.ErrNotFound) {
+			return utils.SendBadResponse(c, http.StatusNotFound, "Not found")
+		}
+
 		p.logger.Error(utils.GetError(errPrefix, err).Error())
-		//TODO: add check for notfoundErr
 		return utils.SendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
 	}
 
@@ -70,8 +74,11 @@ func (p ProductHandler) Set(c echo.Context) error {
 
 	updated, err := p.manager.Set(c.Request().Context(), product)
 	if err != nil {
+		if errors.Is(err, models.ErrNotFound) {
+			return utils.SendBadResponse(c, http.StatusNotFound, "Not found")
+		}
+
 		p.logger.Error(utils.GetError(errPrefix, err).Error())
-		//TODO: add check for notfoundErr
 		return utils.SendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
 	}
 
@@ -98,8 +105,11 @@ func (p ProductHandler) Add(c echo.Context) error {
 
 	created, err := p.manager.Add(c.Request().Context(), product)
 	if err != nil {
+		if errors.Is(err, models.ErrNotFound) {
+			return utils.SendBadResponse(c, http.StatusNotFound, "Not found")
+		}
+
 		p.logger.Error(utils.GetError(errPrefix, err).Error())
-		//TODO: add check for notfoundErr
 		return utils.SendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
 	}
 
@@ -116,8 +126,11 @@ func (p ProductHandler) Delete(c echo.Context) error {
 
 	err = p.manager.Delete(c.Request().Context(), id)
 	if err != nil {
+		if errors.Is(err, models.ErrNotFound) {
+			return utils.SendBadResponse(c, http.StatusNotFound, "Not found")
+		}
+
 		p.logger.Error(utils.GetError(errPrefix, err).Error())
-		//TODO: add check for notfoundErr
 		return utils.SendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
 	}
 

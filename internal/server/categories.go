@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"io"
 	"log/slog"
 	"net/http"
@@ -42,8 +43,11 @@ func (cat CategoryHandler) Get(c echo.Context) error {
 
 	category, err := cat.manager.Get(c.Request().Context(), id)
 	if err != nil {
+		if errors.Is(err, models.ErrNotFound) {
+			return utils.SendBadResponse(c, http.StatusNotFound, "Not found")
+		}
 		cat.logger.Error(utils.GetError(errPrefix, err).Error())
-		//TODO: add check for notfoundErr
+
 		return utils.SendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
 	}
 
@@ -70,8 +74,11 @@ func (cat CategoryHandler) Set(c echo.Context) error {
 
 	updated, err := cat.manager.Set(c.Request().Context(), category)
 	if err != nil {
+		if errors.Is(err, models.ErrNotFound) {
+			return utils.SendBadResponse(c, http.StatusNotFound, "Not found")
+		}
+
 		cat.logger.Error(utils.GetError(errPrefix, err).Error())
-		//TODO: add check for notfoundErr
 		return utils.SendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
 	}
 
@@ -88,8 +95,11 @@ func (cat CategoryHandler) Delete(c echo.Context) error {
 
 	err = cat.manager.Delete(c.Request().Context(), id)
 	if err != nil {
+		if errors.Is(err, models.ErrNotFound) {
+			return utils.SendBadResponse(c, http.StatusNotFound, "Not found")
+		}
+
 		cat.logger.Error(utils.GetError(errPrefix, err).Error())
-		//TODO: add check for notfoundErr
 		return utils.SendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
 	}
 
@@ -116,8 +126,11 @@ func (cat CategoryHandler) Add(c echo.Context) error {
 
 	created, err := cat.manager.Add(c.Request().Context(), category.Name)
 	if err != nil {
+		if errors.Is(err, models.ErrNotFound) {
+			return utils.SendBadResponse(c, http.StatusNotFound, "Not found")
+		}
+
 		cat.logger.Error(utils.GetError(errPrefix, err).Error())
-		//TODO: add check for notfoundErr
 		return utils.SendBadResponse(c, http.StatusInternalServerError, "ne rabotaet")
 	}
 

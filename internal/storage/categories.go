@@ -2,8 +2,10 @@ package storage
 
 import (
 	"context"
+	"errors"
 
 	"github.com/Masterminds/squirrel"
+	"github.com/jackc/pgx/v5"
 
 	"github.com/LexusEgorov/items-accounting/internal/models"
 )
@@ -35,6 +37,10 @@ func (c *Categories) Get(ctx context.Context, id int) (category models.Category,
 		&category.Updated,
 	)
 	if err != nil {
+		if errors.Is(pgx.ErrNoRows, err) {
+			return category, models.ErrNotFound
+		}
+
 		return category, c.db.GetError(err, errPrefix)
 	}
 
@@ -99,7 +105,7 @@ func (c *Categories) Set(ctx context.Context, id int, name string) error {
 	}
 
 	if result.RowsAffected() == 0 {
-		return models.ErrNotUpdated
+		return models.ErrNotFound
 	}
 
 	return nil
