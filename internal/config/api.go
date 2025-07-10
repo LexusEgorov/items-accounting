@@ -33,18 +33,16 @@ type Config struct {
 
 func New() (cfg *Config, err error) {
 	configPath, err := fetchConfigPath()
-	if err != nil {
-		if !errors.Is(err, models.ErrConfigPathNotProvided) {
-			return nil, fmt.Errorf("read config error: %v", err)
-		}
-
-		cfg, err = readEnvConfig()
-	} else {
-		cfg, err = readFileConfig(configPath)
+	if err != nil && !errors.Is(err, models.ErrConfigPathNotProvided) {
+		return nil, fmt.Errorf("read config error: %v", err)
 	}
+
+	cfg, err = readFileConfig(configPath)
 	if err != nil {
 		return nil, err
 	}
+
+	cfg = readEnvConfig(cfg)
 
 	err = checkConfig(cfg)
 	if err != nil {
@@ -94,30 +92,57 @@ func checkServerConfig(cfg *ServerConfig) error {
 }
 
 // Читает конфиг из env
-func readEnvConfig() (*Config, error) {
+func readEnvConfig(cfg *Config) *Config {
 	port, err := strconv.Atoi(os.Getenv("SERVER_PORT"))
 	if err != nil {
-		return nil, err
+		return nil
 	}
 
-	return &Config{
-		Server: ServerConfig{
-			Port: port,
-		},
-		DB: DBConfig{},
-	}, nil
+	if port != 0 {
+		cfg.Server.Port = port
+	}
+
+	address := os.Getenv("SERVER_ADDRESS")
+	if address != "" {
+		cfg.Server.Addr = address
+	}
+
+	maxResponseTime, err := time.ParseDuration(os.Getenv("SERVER_RESPONSE_TIME"))
+	if err != nil {
+		return nil
+	}
+
+	if maxResponseTime != 0 {
+		cfg.Server.MaxResponseTime = maxResponseTime
+	}
+
+	dbPassword := os.Getenv("DB_PASSWORD")
+	if dbPassword != "" {
+		cfg.DB.Password = dbPassword
+	}
+
+	dbUser := os.Getenv("DB_USER")
+	if dbUser != "" {
+		cfg.DB.User = dbUser
+	}
+
+	dbName := os.Getenv("DB_NAME")
+	if dbName != "" {
+		cfg.DB.Name = dbName
+	}
+
+	return cfg
 }
 
 // Читает конфиг из файла
 func readFileConfig(configPath string) (*Config, error) {
+	var cfg Config
 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
-		return nil, err
+		return &cfg, err
 	}
 
-	var cfg Config
-
 	if err := cleanenv.ReadConfig(configPath, &cfg); err != nil {
-		return nil, err
+		return &cfg, err
 	}
 
 	return &cfg, nil
