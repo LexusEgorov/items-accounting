@@ -15,6 +15,7 @@ require (
 	github.com/lann/ps v0.0.0-20150810152359-62de8c46ede0 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect
 	golang.org/x/crypto v0.38.0 // indirect
@@ -29,6 +30,7 @@ require (
 	github.com/Masterminds/squirrel v1.5.4
 	github.com/ilyakaznacheev/cleanenv v1.5.0
 	github.com/jackc/pgerrcode v0.0.0-20240316143900-6e2875d9b438
+	github.com/jackc/pgx v3.6.2+incompatible
 	github.com/jackc/pgx/v5 v5.7.5
 	github.com/labstack/echo/v4 v4.13.4
 	github.com/mfridman/interpolate v0.0.2 // indirect
