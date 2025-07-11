@@ -25,19 +25,18 @@ func NewProducts(db *DB) (*Products, error) {
 
 // Add implements products.Storager.
 func (p *Products) Add(ctx context.Context, product models.ProductDTO) (id int, err error) {
-	errPrefix := "storage.Products.Add"
 	sql, args, err := p.psql.Insert("products").
 		Columns("category_id", "name", "price", "count").
 		Values(product.CatID, product.Name, product.Price, product.Count).
 		Suffix("RETURNING id").
 		ToSql()
 	if err != nil {
-		return 0, p.db.GetError(err, errPrefix)
+		return 0, err
 	}
 
 	err = p.db.DB.QueryRow(ctx, sql, args...).Scan(&id)
 	if err != nil {
-		return 0, p.db.GetError(err, errPrefix)
+		return 0, err
 	}
 
 	return id, err
@@ -45,19 +44,18 @@ func (p *Products) Add(ctx context.Context, product models.ProductDTO) (id int, 
 
 // Delete implements products.Storager.
 func (p *Products) Delete(ctx context.Context, id int) error {
-	errPrefix := "storage.Products.Delete"
 	sql, args, err := p.psql.Delete("products").Where("id = ?", id).ToSql()
 	if err != nil {
-		return p.db.GetError(err, errPrefix)
+		return err
 	}
 
 	result, err := p.db.DB.Exec(ctx, sql, args...)
 	if err != nil {
-		return p.db.GetError(err, errPrefix)
+		return err
 	}
 
 	if result.RowsAffected() == 0 {
-		return p.db.GetError(models.ErrNotFound, errPrefix)
+		return err
 	}
 
 	return nil
@@ -65,10 +63,9 @@ func (p *Products) Delete(ctx context.Context, id int) error {
 
 // Get implements products.Storager.
 func (p *Products) Get(ctx context.Context, id int) (product models.Product, err error) {
-	errPrefix := "storage.Products.Get"
 	sql, args, err := p.psql.Select("*").From("products").Where("id = ?", id).ToSql()
 	if err != nil {
-		return product, p.db.GetError(err, errPrefix)
+		return product, err
 	}
 
 	err = p.db.DB.QueryRow(ctx, sql, args...).Scan(
@@ -85,7 +82,7 @@ func (p *Products) Get(ctx context.Context, id int) (product models.Product, err
 			return product, models.ErrNotFound
 		}
 
-		return product, p.db.GetError(err, errPrefix)
+		return product, err
 	}
 
 	return product, nil
@@ -93,7 +90,6 @@ func (p *Products) Get(ctx context.Context, id int) (product models.Product, err
 
 // Set implements products.Storager.
 func (p *Products) Set(ctx context.Context, product models.ProductDTO) error {
-	errPrefix := "storage.Products.Set"
 	sql, args, err := p.psql.Update("products").
 		Set("category_id", product.CatID).
 		Set("name", product.Name).
@@ -107,11 +103,11 @@ func (p *Products) Set(ctx context.Context, product models.ProductDTO) error {
 
 	result, err := p.db.DB.Exec(ctx, sql, args...)
 	if err != nil {
-		return p.db.GetError(err, errPrefix)
+		return err
 	}
 
 	if result.RowsAffected() == 0 {
-		return p.db.GetError(models.ErrNotFound, errPrefix)
+		return err
 	}
 
 	return nil

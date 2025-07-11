@@ -24,10 +24,9 @@ func NewCategories(db *DB) (*Categories, error) {
 
 // Get implements categories.Storager.
 func (c *Categories) Get(ctx context.Context, id int) (category models.Category, err error) {
-	errPrefix := "storage.Categories.Get"
 	sql, args, err := c.psql.Select("*").From("categories").Where("id = ?", id).ToSql()
 	if err != nil {
-		return category, c.db.GetError(err, errPrefix)
+		return category, err
 	}
 
 	err = c.db.DB.QueryRow(ctx, sql, args...).Scan(
@@ -41,7 +40,7 @@ func (c *Categories) Get(ctx context.Context, id int) (category models.Category,
 			return category, models.ErrNotFound
 		}
 
-		return category, c.db.GetError(err, errPrefix)
+		return category, err
 	}
 
 	return category, nil
@@ -49,19 +48,18 @@ func (c *Categories) Get(ctx context.Context, id int) (category models.Category,
 
 // Add implements categories.Storager.
 func (c *Categories) Add(ctx context.Context, name string) (id int, err error) {
-	errPrefix := "storage.Categories.Add"
 	sql, args, err := c.psql.Insert("categories").
 		Columns("name").
 		Values(name).
 		Suffix("RETURNING id").
 		ToSql()
 	if err != nil {
-		return 0, c.db.GetError(err, errPrefix)
+		return 0, err
 	}
 
 	err = c.db.DB.QueryRow(ctx, sql, args...).Scan(&id)
 	if err != nil {
-		return 0, c.db.GetError(err, errPrefix)
+		return 0, err
 	}
 
 	return id, nil
@@ -69,16 +67,15 @@ func (c *Categories) Add(ctx context.Context, name string) (id int, err error) {
 
 // Delete implements categories.Storager.
 func (c *Categories) Delete(ctx context.Context, id int) error {
-	errPrefix := "storage.Categories.Delete"
 	sql, args, err := c.psql.Delete("categories").Where("id = ?", id).ToSql()
 
 	if err != nil {
-		return c.db.GetError(err, errPrefix)
+		return err
 	}
 
 	result, err := c.db.DB.Exec(ctx, sql, args...)
 	if err != nil {
-		return c.db.GetError(err, errPrefix)
+		return err
 	}
 
 	if result.RowsAffected() == 0 {
@@ -90,18 +87,17 @@ func (c *Categories) Delete(ctx context.Context, id int) error {
 
 // Set implements categories.Storager.
 func (c *Categories) Set(ctx context.Context, id int, name string) error {
-	errPrefix := "storage.Categories.Set"
 	sql, args, err := c.psql.Update("categories").
 		Set("name", name).
 		Where("id = ?", id).
 		ToSql()
 	if err != nil {
-		return c.db.GetError(err, errPrefix)
+		return err
 	}
 
 	result, err := c.db.DB.Exec(ctx, sql, args...)
 	if err != nil {
-		return c.db.GetError(err, errPrefix)
+		return err
 	}
 
 	if result.RowsAffected() == 0 {
