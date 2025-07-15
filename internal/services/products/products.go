@@ -2,6 +2,7 @@ package products
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/LexusEgorov/items-accounting/internal/models"
 )
@@ -26,17 +27,17 @@ func New(storage Storager) *Products {
 func (c Products) Add(ctx context.Context, product models.ProductDTO) (models.ProductDTO, error) {
 	//TODO: move to validateFn
 	if product.CatID == 0 {
-		return models.ProductDTO{}, models.NewEmptyErr("categoryId")
+		return models.ProductDTO{}, fmt.Errorf("Products.Add: %v", models.NewEmptyErr("categoryId"))
 	}
 
 	//TODO: move to validateFn
 	if product.Name == "" {
-		return models.ProductDTO{}, models.NewEmptyErr("name")
+		return models.ProductDTO{}, fmt.Errorf("Products.Add: %v", models.NewEmptyErr("name"))
 	}
 
 	id, err := c.storage.Add(ctx, product)
 	if err != nil {
-		return models.ProductDTO{}, err
+		return models.ProductDTO{}, fmt.Errorf("Products.Add: %v", err)
 	}
 
 	product.ID = id
@@ -46,17 +47,17 @@ func (c Products) Add(ctx context.Context, product models.ProductDTO) (models.Pr
 func (c Products) Set(ctx context.Context, product models.ProductDTO) (models.ProductDTO, error) {
 	//TODO: move to validateFn
 	if product.CatID <= 0 {
-		return models.ProductDTO{}, models.NewEmptyErr("categoryId")
+		return models.ProductDTO{}, fmt.Errorf("Products.Set: %v", models.NewEmptyErr("categoryId"))
 	}
 
 	//TODO: move to validateFn
 	if product.Name == "" {
-		return models.ProductDTO{}, models.NewEmptyErr("name")
+		return models.ProductDTO{}, fmt.Errorf("Products.Set: %v", models.NewEmptyErr("name"))
 	}
 
 	err := c.storage.Set(ctx, product)
 	if err != nil {
-		return models.ProductDTO{}, err
+		return models.ProductDTO{}, fmt.Errorf("Products.Set: %v", err)
 	}
 
 	return product, nil
@@ -65,12 +66,12 @@ func (c Products) Set(ctx context.Context, product models.ProductDTO) (models.Pr
 func (c Products) Get(ctx context.Context, id int) (models.ProductDTO, error) {
 	//TODO: move to validateFn
 	if id <= 0 {
-		return models.ProductDTO{}, models.NewEmptyErr("id")
+		return models.ProductDTO{}, fmt.Errorf("Products.Get: %v", models.NewEmptyErr("id"))
 	}
 
 	product, err := c.storage.Get(ctx, id)
 	if err != nil {
-		return models.ProductDTO{}, err
+		return models.ProductDTO{}, fmt.Errorf("Products.Get: %v", err)
 	}
 
 	return product.ToDTO(), nil
@@ -79,7 +80,7 @@ func (c Products) Get(ctx context.Context, id int) (models.ProductDTO, error) {
 func (c Products) Delete(ctx context.Context, id int) error {
 	//TODO: move to validateFn
 	if id <= 0 {
-		return models.NewEmptyErr("id")
+		return fmt.Errorf("Products.Add: %v", models.NewEmptyErr("id"))
 	}
 
 	return c.storage.Delete(ctx, id)

@@ -19,7 +19,7 @@ func NewDB(cfg config.DBConfig) (*DB, error) {
 	connStr := config.GetConnStr(cfg.User, cfg.Password, cfg.Name)
 	err := db.connect(connStr)
 	if err != nil {
-		return nil, fmt.Errorf("newDb: %v", err)
+		return nil, fmt.Errorf("Storage.db.NewDB: %v", err)
 	}
 
 	return db, nil
@@ -32,12 +32,12 @@ func (d *DB) Close() {
 func (d *DB) connect(connStr string) error {
 	pool, err := pgxpool.New(context.Background(), connStr)
 	if err != nil {
-		return fmt.Errorf("db.connect: %v", err)
+		return fmt.Errorf("Storage.db.connect: %v", err)
 	}
 
 	err = pool.Ping(context.Background())
 	if err != nil {
-		return fmt.Errorf("db.connect pool ping: %v", err)
+		return fmt.Errorf("Storage.db.connect: %v", err)
 	}
 
 	d.DB = pool

@@ -67,5 +67,5 @@ func (s *Server) Stop(ctx context.Context) error {
 		s.logger.Error(err.Error())
 	}
 
-	return err
+	return fmt.Errorf("Server.Stop: %v", err)
 }

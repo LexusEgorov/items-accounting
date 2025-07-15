@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 
 	"github.com/LexusEgorov/items-accounting/internal/config"
@@ -20,17 +21,17 @@ type App struct {
 func New(logger *slog.Logger, config *config.Config) (*App, error) {
 	db, err := storage.NewDB(config.DB)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("logger.New: %v", err)
 	}
 
 	categoryStorage, err := storage.NewCategories(db)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("logger.New: %v", err)
 	}
 
 	productStorage, err := storage.NewProducts(db)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("logger.New: %v", err)
 	}
 
 	categoryManager := categories.New(categoryStorage)
