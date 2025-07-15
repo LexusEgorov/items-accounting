@@ -7,7 +7,7 @@ import (
 	"github.com/LexusEgorov/items-accounting/internal/models"
 )
 
-type Storager interface {
+type CategoryRepository interface {
 	Add(ctx context.Context, name string) (id int, err error)
 	Get(ctx context.Context, id int) (category models.Category, err error)
 	Set(ctx context.Context, id int, name string) error
@@ -15,10 +15,10 @@ type Storager interface {
 }
 
 type Categories struct {
-	storage Storager
+	storage CategoryRepository
 }
 
-func New(storage Storager) *Categories {
+func New(storage CategoryRepository) *Categories {
 	return &Categories{
 		storage: storage,
 	}
