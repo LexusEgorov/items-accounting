@@ -46,6 +46,10 @@ func (c Products) Add(ctx context.Context, product models.ProductDTO) (models.Pr
 
 func (c Products) Set(ctx context.Context, product models.ProductDTO) (models.ProductDTO, error) {
 	//TODO: move to validateFn
+	if product.ID <= 0 {
+		return models.ProductDTO{}, fmt.Errorf("Products.Set: %v", models.NewEmptyErr("id"))
+	}
+
 	if product.CatID <= 0 {
 		return models.ProductDTO{}, fmt.Errorf("Products.Set: %v", models.NewEmptyErr("categoryId"))
 	}
@@ -80,7 +84,7 @@ func (c Products) Get(ctx context.Context, id int) (models.ProductDTO, error) {
 func (c Products) Delete(ctx context.Context, id int) error {
 	//TODO: move to validateFn
 	if id <= 0 {
-		return fmt.Errorf("Products.Add: %v", models.NewEmptyErr("id"))
+		return fmt.Errorf("Products.Delete: %v", models.NewEmptyErr("id"))
 	}
 
 	return c.storage.Delete(ctx, id)
