@@ -1,0 +1,42 @@
+services:
+  api:
+    image: "accounting"
+    build:
+      context: .
+      dockerfile: Dockerfile.accounting
+    depends_on:
+      - migrator
+      - db
+    ports:
+      - 44044:8080
+    command: ["-config=${CONFIG_PATH}"]
+    volumes:
+      - ./configs:/app/configs
+  migrator:
+    image: migrator
+    build:
+      context: .
+      dockerfile: Dockerfile.migrator
+    depends_on:
+      - db
+    restart: "no"
+    command: ["-p=${DB_PASSWORD}", "-m=${MIGRATIONS_PATH}", "-n=${DB_NAME}", "-u=${DB_USER}"]
+    volumes:
+     - ./migrations:/app/migrations
+  db:
+    image: postgres:latest
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - 44045:5432
+    volumes:
+      - db:/var/lib/postgresql/data
+volumes:
+  db:
